@@ -1,0 +1,131 @@
+<div class="modal-header hide">
+    <!-- <a class="hide npr-logo" href="http://npr.org/books/"><img src="http://media.npr.org/chrome/books/npr-books-logo-color.png" alt="NPR Books" /></a> -->
+    <a href="#" class="hide mobile-dismiss" data-dismiss="modal" aria-hidden="true"><i class="icon-left-open"></i> Back to NPR&rsquo;s Book Concierge</a>
+    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+</div>
+<div class="modal-body-wrapper">
+    <a class="paddle" href="#/book/<%= previous %>" id="previous-book">
+        <% if (previous != null){  %>
+        <span class="icon-left-open"></span>
+        <% } %>
+    </a>
+    <div class="modal-body-inner">
+        <div class="modal-body clearfix">
+            <div class="modal-book-cover">
+                <img id="book-image" src="assets/cover/<%= book.slug %>.jpg" alt="<%= book.title %>"/>
+            </div>
+
+            <div class="modal-text">
+                <h4 class="modal-title" id="myModalLabel"><%= book.title %></h4>
+                <% if(book.author) { %><p class="author">By <%= book.author %></p> <% } %>
+                <% if(book.genre) { %><p class="genre"><strong><%= COPY.content.genre %> </strong><%= book.genre %></p> <% } %>
+
+                <!-- Tags -->
+                <% if(book.tags.length > 0) { %><p class="tags"><% _.each(book.tags, function(tag, index, list){ %>
+                    <a
+                        class="btn btn-large btn-info tag <%= tag %>"
+                        href="#/tag/<%= tag %>"><%= COPY.tags[tag] %>
+                    </a>
+                <% }); %></p> <% } %>
+
+                <!-- Book Description/Review -->
+                <% if (book.text && !book.html_text) { %><p class="text"><%= book.text %></p>
+                <% } else if (book.text && book.html_text) { %><%= book.text %>
+                <% } %>
+                <% if(book.reviewer) { %><p class="reviewer">&mdash; <%= COPY.content.recommended_by %> <strong><% if (book['reviewer_link']) { %><a href="<%= book['reviewer_link'] %>" target="_blank"><%= book.reviewer %></a><% } else { %><%= book.reviewer %><% } %></strong><% if (book['reviewer_id']) { %>, <%= book['reviewer_id'] %><% } %></p> <% } %>
+
+                <!-- Purchase/Related Links -->
+
+                <p class="book-modal-links">
+                    <% if (book.isbn13 != null) { %>
+                    <a href="http://www.worldcat.org/isbn/<%= book.isbn %>" target="_blank" class="purchase-link" onclick="ANALYTICS.trackEvent('library', '<%= book.slug %>');"><i class="icon icon-bank"></i>Find at your library</a>
+                    <% } %>
+                    <a href="http://www.amazon.com/dp/<%= book.isbn %>?tag=npr-5-20" target="_blank" class="purchase-link" onclick="ANALYTICS.trackEvent('amazon', '<%= book.slug %>');"><i class="icon icon-basket"></i>Amazon</a>
+                    <% if (book.hide_ibooks != 'TRUE') { %>
+                        <% if (APP_CONFIG.USE_ITUNES_ID) { %>
+                            <a href="https://itunes.apple.com/us/book/id<%= book.itunes_id %>?at=11l79Y" target="_blank" class="purchase-link" onclick="ANALYTICS.trackEvent('ibooks', '<%= book.slug %>');"><i class="icon icon-basket"></i>iBooks</a>
+                        <% } else { %>
+                            <a href="https://itunes.apple.com/us/book/isbn<%= book.isbn13 %>?at=11l79Y" target="_blank" class="purchase-link" onclick="ANALYTICS.trackEvent('ibooks', '<%= book.slug %>');"><i class="icon icon-basket"></i>iBooks</a>
+                        <% } %>
+                    <% } %>
+
+                    <% if (book.isbn13 != null) { %>
+                    <a href="http://www.indiebound.org/book/<%= book.isbn13 %>?aff=NPR" target="_blank" class="purchase-link" onclick="ANALYTICS.trackEvent('indiebound', '<%= book.slug %>');"><i class="icon icon-basket"></i>Independent&nbsp;Booksellers</a>
+                    <% } %>
+                </p>
+
+                <% if (book.links.length > 0) { %>
+                <ul>
+                    <% _.each(book.links, function(link) { %>
+                    <li class="book-modal-links">
+                        <a href="<%= link.url %>" target="_blank">
+                            <strong>
+                            <% if (link.category) { %><%= link.category %><% if (link.title) { %>:<% } %><% } else { %>Feature:<% } %>
+                            </strong>
+                            <%= link.title %>
+                        </a>
+                    </li>
+                    <% }) %>
+                </ul>
+                <% } %>
+                <!-- External links -->
+                <% if(book.external_links.length > 0) { %>
+                    <p class="external-links-intro<% if (!book.links.length) { %> first<% } %>"><%= COPY.content.external_links_intro %></p>
+                    <ul class="external-links">
+                        <% _.each(book.external_links, function(link, index, list){ %><%= link %><% }); %>
+                    </ul>
+                <% } %>
+            </div>
+        </div>
+
+        <div class="modal-footer">
+            <div class="social">
+                <p>Share Review:</p>
+                <a href="mailto:?body=<%= encodeURIComponent(APP_CONFIG.SHARE_URL + "#/book/" + book.slug + '\n\n"' + book.text.replace(/(<([^>]+)>)/ig,"") + '"\n\n--' + book.reviewer + ', ' + book.reviewer_id.replace(/(<([^>]+)>)/ig,"")) %>&amp;subject=<%= encodeURIComponent("NPR's best books of 2016 - " + book.title) %>" onclick="_gaq.push(['_trackEvent', '<%= APP_CONFIG.PROJECT_SLUG %>', 'email', '<%= book.slug %>']);">
+                    <div class="share-button">
+                        <span class="icon icon-mail"></span>
+                    </div>
+                </a>
+
+                <a href="https://twitter.com/share?text=<%= encodeURIComponent('Look what I found on @NPRBooks\' #bookconcierge: ' + book.title) %>&amp;url=<%= encodeURIComponent(APP_CONFIG.SHARE_URL + "share/" + book.slug + ".html") %>" target="_blank" onclick="_gaq.push(['_trackEvent', '<%= APP_CONFIG.PROJECT_SLUG %>', 'twitter', '<%= book.slug %>']);">
+                    <div class="share-button">
+                        <span class="icon icon-twitter"></span>
+                    </div>
+                </a>
+                <a href="https://www.facebook.com/dialog/feed?app_id=<%= COPY.share.facebook_app_id %>&amp;link=<%= encodeURIComponent(APP_CONFIG.SHARE_URL + "share/" + book.slug + ".html") %>&amp;redirect_uri=<%= encodeURIComponent(APP_CONFIG.SHARE_URL + "#book/" + book.slug) %>" target="_blank" onclick="_gaq.push(['_trackEvent', '<%= APP_CONFIG.PROJECT_SLUG %>', 'facebook', '<%= book.slug %>']);">
+                    <div class="share-button">
+                        <span class="icon icon-facebook"></span>
+                    </div>
+                </a>
+                <a href="https://pinterest.com/pin/create/button/?url=<%= encodeURIComponent(APP_CONFIG.SHARE_URL + "share/" + book.slug + ".html") %>&amp;media=<%= encodeURIComponent(APP_CONFIG.SHARE_URL + "assets/cover/" + book.slug + ".jpg") %>" target="_blank" onclick="_gaq.push(['_trackEvent', '<%= APP_CONFIG.PROJECT_SLUG %>', 'pinterest', '<%= book.slug %>']);">
+                    <div class="share-button">
+                    <span class="icon icon-pinterest-circled"></span>
+                    </div>
+                </a>
+            </div>
+            <div class="hide book-nav">
+                <% if (!MOBILE){ %>
+                  <% if (previous != null){ %>
+                  <a href="#/book/<%= previous %>" class="btn btn-default modal-nav-buttons" id="previous-book">PREVIOUS BOOK</a>
+                  <% } %>
+                  <% if (next != null){ %>
+                  <a href="#/book/<%= next %>" class="btn btn-default modal-nav-buttons" id="next-book">NEXT BOOK</a>
+                  <% } %>
+                <% } %>
+            </div>
+            <button type="button" class="btn btn-default" id="modal-close-btn" data-dismiss="modal">&times; <em>Close</em></button>
+        </div>
+        <% if (MOBILE && !noRepeat){ %>
+        <div class="instructable">
+          <p><i class="icon-resize-horizontal"></i></p>
+          <p class="instructions">Swipe to navigate</p>
+        </div>
+        <% } %>
+    </div>
+
+    <a class="paddle" href="#/book/<%= next %>" id="next-book">
+        <% if (next != null){  %>
+        <span class="icon-right-open"></span>
+        <% } %>
+    </a>
+</div>

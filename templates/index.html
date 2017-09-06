@@ -1,0 +1,116 @@
+{% extends '_base.html' %}
+
+{% block header_content %}
+<header id="top">
+    <div class="header-wrapper">
+        <a class="npr" href="https://npr.org/books/"><img src="assets/books_logo.png" alt="NPR Books" /></a>
+        <h1>{{ COPY.content.header_title }}</h1>
+        <h2>{{ COPY.content.header_subhead }}</h2>
+        <p class="byline">{{ COPY.attribution.byline }}</p>
+        <button class="share btn btn-default" data-toggle="modal" data-backdrop="static" data-target="#share-modal"><i class="icon-export"></i> SHARE THIS APP</button>
+    </div>
+
+
+</header>
+{% endblock %}
+
+{% block content %}
+    <div class="book-container">
+
+        <!-- <div class="top-row"> -->
+            <div class="spacer">
+                <h4 class="hidden-xs">What would you<br> like to read?</h4>
+            </div>
+
+            <div class="title-area">
+                <div class="current-tag-wrapper">
+                    <h3 class="current-tag"><span id="showing-span"></span><span id="tag-span"></span></h3>
+                </div>
+
+
+
+                <div class="btn-group btn-group-lg toggle-text grid-active">
+
+
+                   <button class="grid btn btn-default"><i class="icon-th"></i> Covers</button>
+                   <button class="list btn btn-default"><i class="icon-list-bullet"></i> List</button>
+
+
+                </div>
+
+            </div>
+        <!-- </div> -->
+
+        <div class="grid-row">
+            <div class="tags-wrapper">
+
+
+                <div class="chatter"><p>{{ COPY.content.chatter }}
+                    <a href="https://apps.npr.org/best-books-2016/#/_" target="_blank">2016</a>,
+                    <a href="https://apps.npr.org/best-books-2015/#/_" target="_blank">2015</a>,
+                    <a href="https://apps.npr.org/best-books-2014/#/_" target="_blank">2014</a>,
+                    <a href="https://apps.npr.org/best-books-2013/#/_" target="_blank">2013</a>,
+                    <a href="https://www.npr.org/2012/11/30/166251839/best-books-of-2012-the-complete-list" target="_blank">2012</a>,
+                    <a href="https://www.npr.org/2011/11/30/142942283/the-best-books-of-2011-the-complete-list" target="_blank">2011</a>,
+                    <a href="https://www.npr.org/2010/12/23/131566277/best-books-of-2010-the-complete-list" target="_blank">2010</a>,
+                    <a href="https://www.npr.org/templates/story/story.php?storyId=121058884" target="_blank">2009</a>,
+                    <a href="https://www.npr.org/templates/story/story.php?storyId=97212769" target="_blank">2008</a>
+                    </p>
+                </div>
+                <button id="mobile-filters" class="visible-xs btn btn-primary btn-block">{{ COPY.content.filter_button }}</button>
+                <button id="clear-mobile-filters" class="visible-xs btn btn-large btn-info clear-tags hide" data-filter-value="*"><i class="icon-cancel-circled2">&nbsp;&nbsp;</i>{{ COPY.content.clear_filters }}</button>
+
+
+                <!-- All Tags List -->
+                <ul class="filter tags option-set list-unstyled hidden-xs" data-filter-group="category">
+
+                    <li class="visible-xs mobile-label">{{ COPY.content.filter_by }} <span class="close visible-xs close-modal" aria-hidden="true">&times;</span></li>
+
+                    <li class="hidden-xs">
+                        <button class="btn btn-large btn-info clear-tags hide" data-filter-value="*"><i class="icon-cancel-circled2">&nbsp;&nbsp;</i>{{ COPY.content.clear_filters }}</button>
+                    </li>
+                    {% for row in COPY.tags %}
+                     <li>
+                         <button
+                         class="btn btn-large btn-info tag {{ row.key }}"
+                         data-filter-value=".tag-{{ row.key }}" data-tag-slug="{{ row.key }}">{{ row.value }}</button>
+                     </li>
+                    {% endfor %}
+
+
+                </ul>
+            </div>
+            <!-- Book Cards Grid -->
+
+            <div class="books-grid-wrapper">
+
+                <div id="books-grid" class="filter-inactive">
+
+                </div>
+
+                <ul id="books-list">
+
+                </ul>
+            </div>
+        </div>
+    </div>
+
+
+
+{% endblock %}
+
+{% block extra_foot %}
+<!-- Modal -->
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" data-keyboard="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+    </div><!-- /.modal-content -->
+  </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+
+
+<script type="text/javascript">
+    window.BOOKS = {{ books_js|safe }};
+    ANALYTICS.setupChartbeat();
+</script>
+{% endblock %}

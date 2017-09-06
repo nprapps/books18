@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+<title>{{ COPY.content.title }}</title>
+
+    {% include '_meta.html' %}
+
+    <!-- CHARTBEAT -->
+    <script type="text/javascript">var _sf_startpt=(new Date()).getTime()</script>
+
+    <!-- WEBFONTS -->
+    {{ JS.push('js/lib/webfont.js') }}
+    {{ JS.push('js/fonts.js') }}
+    {{ JS.render('js/webfonts.min.js') }}
+
+    <!-- CSS -->
+    <!-- FONTS -->
+    {{ CSS.push('www/css/icon/npr-app-template.css') }}
+    {{ CSS.render('css/rendered/fonts.min.css') }}
+    {{ CSS.push('less/app.less') }}
+    {% block extra_css %}{% endblock extra_css %}
+    {{ CSS.render('css/app.min.css') }}
+
+    {# Twitter #}
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:site" content="{{ COPY.share.twitter_handle }}">
+    <meta name="twitter:description" content="{{ COPY.share.twitter_text }}">
+    <meta name="twitter:image" content="{{ COPY.share.twitter_image_url }}" />
+
+    {# Facebook #}
+    <meta property="og:title" content="{{ COPY.share.facebook_title }}" />
+    <meta property="og:url" content="{{ COPY.share.share_url }}" />
+    <meta property="og:type" content="article" />
+    <meta property="og:description" content="{{ COPY.share.facebook_text }}" />
+    <meta property="og:image" content="{{ COPY.share.facebook_image_url }}" />
+    <meta property="og:site_name" content="NPR.org" />
+    <meta property="fb:app_id" content="{{ COPY.share.facebook_app_id }}" />
+
+    {# Google News #}
+    <meta name="thumbnail" content="{{ COPY.share.google_news_image_url }}" />
+
+    {% block extra_head %}
+    {% endblock extra_head %}
+</head>
+<body>
+    <a class="sr-only" href="#content">Skip To Content</a>
+
+    {% block outer_content %}
+
+    {% block header_content %}
+    {% endblock header_content %}
+
+    <section id="content">
+      <div class="btn" id="back-to-top">
+          <p id="back-to-top-text">Back to top&nbsp;&nbsp;<i class="icon-up-hand"></i></p>
+          <p id="back-to-top-no-text"><i class="icon-up-hand"></i></p>
+      </div>
+        <div class="container">
+            <div class="row">
+                <div id="main-content" class="col-md-12">
+                    {% block content %}
+                    {% endblock content %}
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer id="footer">
+        <div class="primary">
+            <ul>
+                <li><a href="https://www.npr.org" data-action="Click Logo"><img src="assets/logo.png" alt="NPR Logo"></a></li>
+                <li class="news"><a href="https://www.npr.org/sections/news/">News</a></li>
+                <li class="artslife"><a href="https://www.npr.org/sections/arts/">Arts &amp; Life</a></li>
+                <li class="music"><a href="https://www.npr.org/music/">Music</a></li>
+                <li class="programs"><a href="https://www.npr.org/programs/">Programs</a></li>
+                <li class="listen"><a href="https://www.npr.org/listen/">Listen</a></li>
+                <li class="about"><a href="https://www.npr.org/about/">About</a></li>
+            </ul>
+        </div>
+        <div class="secondary">
+            <p>{{ COPY.content.copyright }}</p>
+            <ul>
+                <li id="footerContact"><a href="https://help.npr.org/npr/includes/customer/npr/custforms/contactus.aspx">Contact</a></li>
+                <li><a href="https://www.npr.org/about/termsofuse.html">Terms of Use</a></li>
+                <li><a href="https://www.npr.org/about/privacypolicy.html">Privacy</a></li>
+                <li><a href="https://thin.npr.org/">Text-Only</a></li>
+            </ul>
+        </div>
+    </footer>
+    {% endblock outer_content %}
+
+    {% include '_share_modal.html' %}
+
+    <!-- JS -->
+    <script src="js/lib/clipboard.min.js"></script>
+    {{ JS.push('js/app_config.js') }}
+    {{ JS.push('js/lib/modernizr.js') }}
+    {{ JS.push('js/copy.js') }}
+    {{ JS.push('js/console.js') }}
+    {{ JS.push('js/lib/jquery-2.1.1.js') }}
+    {{ JS.push('node_modules/isotope-layout/dist/isotope.pkgd.js') }}
+    {{ JS.push('node_modules/imagesloaded/imagesloaded.pkgd.js') }}
+    {{ JS.push('js/lib/html5.js') }}
+    {{ JS.push('js/lib/jquery.scrollTo-1.4.13.js') }}
+    {{ JS.push('node_modules/underscore/underscore.js') }}
+    {{ JS.push('node_modules/bootstrap/dist/js/bootstrap.js') }}
+    {{ JS.push('node_modules/signals/dist/signals.js') }}
+    {{ JS.push('node_modules/hasher/dist/js/hasher.js') }}
+    {{ JS.push('js/lib/jquery.unveil.js') }}
+    {% block extra_foot_js %}{% endblock extra_foot_js %}
+    {{ JS.push('js/analytics.js')}}
+    {{ JS.push('js/templates.js') }}
+    {{ JS.push('js/app.js') }}
+    {{ JS.render('js/app-footer.min.js') }}
+
+    {% block extra_foot %}
+    {% endblock extra_foot %}
+
+
+</body>
+</html>
