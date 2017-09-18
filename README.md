@@ -256,8 +256,8 @@ View a [sample data spreadsheet](https://docs.google.com/spreadsheets/d/10XgwGi6
 In order to get the covers for our books we are using an external service from BAKER & TAYLOR, in order to use it you will need your own credentials stored in these environment variables.
 
 ```
-books16_BAKER_TAYLOR_USERID="SampleUser"
-books16_BAKER_TAYLOR_PASSWORD="SamplePassword"
+books17_BAKER_TAYLOR_USERID="SampleUser"
+books17_BAKER_TAYLOR_PASSWORD="SamplePassword"
 ```
 
 Then run the loader:
