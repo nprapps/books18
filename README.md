@@ -65,6 +65,18 @@ The project contains the following folders and important files:
 * ``requirements.txt`` -- Python requirements.
 * ``static.py`` -- Static Flask views used in both ``app.py`` and ``public_app.py``.
 
+Project lifecycle
+-----------------
+
+TODO: Since this is an annual project, document how to get this project up and running each year.  Give some indication of when these steps should happen, e.g. "one month before launch".
+
+* Copy project code?  TODO: Define whether this means copying files or forking the repo or something else.
+* Push copy to a new GitHub repository.
+* Create a new version of the copy spreadsheet.
+* Create a new version of the books spreadsheet.
+* Create a testing version of the books spreadsheet that includes ISBN values for book records.
+* ???
+
 Bootstrap the project
 ---------------------
 
