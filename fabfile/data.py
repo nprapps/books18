@@ -8,6 +8,7 @@ import app_config
 import codecs
 import copytext
 import csv
+import errno
 import json
 import locale
 import os
@@ -565,6 +566,16 @@ def parse_books_csv():
         book_list.append(b.__dict__)
 
     # Dump the list to JSON.
+
+    # The destination directory, `www/static-data` might not exist if you're
+    # bootstrapping the project for the first time, so make sure it does before
+    # trying to write the JSON.
+    try:
+        os.makedirs('www/static-data')
+    except OSError as e:
+        if e.errno != errno.EEXIST:
+            raise
+
     with open('www/static-data/books.json', 'wb') as writefile:
         writefile.write(json.dumps(book_list))
 
@@ -682,7 +693,6 @@ def make_promotion_thumb():
     images_per_column = TOTAL_IMAGES / IMAGE_COLUMNS
     image_width = PROMOTION_IMAGE_WIDTH / IMAGE_COLUMNS
     max_height = int(image_width * images_per_column * 1.5)
-    thumb_size = [image_width, image_width]
     image = Image.new('RGB', [PROMOTION_IMAGE_WIDTH, max_height])
 
     # Open the books JSON.
@@ -715,6 +725,12 @@ def make_promotion_thumb():
         image.paste(resized, tuple(coordinates))
         last_y = new_height
         total_height += new_height
+
+    if min_height is None:
+        logger.warn("Minimum height not detected.  This is likely because "
+                    "no images were loaded. Skipping generation of promotion "
+                    "thumbnail image.")
+        return
 
     min_prop_width = min_height * 16 / float(9)
     # Make the proportion fit the highest full thumbnail width

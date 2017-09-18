@@ -84,6 +84,14 @@ pip install -r requirements.txt
 npm install
 ```
 
+**Problems installing requirements?** You may need to run the pip command as ``ARCHFLAGS=-Wno-error=unused-command-line-argument-hard-error-in-future pip install -r requirements.txt`` to work around an issue with OSX.
+
+Next, we will download and parse the text used for copy editing. If we don't do this, subsequent update commands fail:
+
+```
+fab text.update
+```
+
 After that we will need to download and parse our book list and covers:
 
 ```
@@ -97,8 +105,6 @@ Once that has been run, then we can do a full update that will sync also fonts &
 ```
 fab update
 ```
-
-**Problems installing requirements?** You may need to run the pip command as ``ARCHFLAGS=-Wno-error=unused-command-line-argument-hard-error-in-future pip install -r requirements.txt`` to work around an issue with OSX.
 
 Hide project secrets
 --------------------
