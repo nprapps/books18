@@ -98,7 +98,9 @@ After that we will need to download and parse our book list and covers:
 fab data.update
 ```
 
-_Note: The `DATA_GOOGLE_DOC_KEY` spreadsheet pointed in `app_config.py` has to be published as a csv in order for the above command to work_
+_Note: The `DATA_GOOGLE\_DOC\_KEY` spreadsheet pointed in `app\_config.py` has to be published as a csv in order for the above command to work_
+
+_Note: In order for cover images to be loaded, each book record has to have an ISBN value.  The books team enters this data, but doesn't get to it until later in the process.  If you want to test out the rig, you'll probably want to make a test version of the spreadsheet that includes more complete data, including ISBNs.  You can specify the test spreadsheet key by overriding the value of `DATA\_GOOGLE\_DOC\_KEY` in a `local\_settings` module._
 
 Once that has been run, then we can do a full update that will sync also fonts & copy:
 

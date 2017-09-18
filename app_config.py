@@ -101,7 +101,9 @@ COPY EDITING
 COPY_GOOGLE_DOC_KEY = '1zQMjIfIwqD-INhQDj_Dr06YlTRw5A6KJ5Z9nxBA6qtQ'
 COPY_PATH = 'data/copy.xlsx'
 
-
+# Key for Google Spreadsheet that contains book entries
+# This is the key for a production version.  Want to use a testing version?
+# Consider defining it in a `local_settings` module.
 DATA_GOOGLE_DOC_KEY = '1l2L3WW_q7zE1t0hpgKVao5Psw7BE2bK_UL8fio-OG08'
 
 # Override
