@@ -4,6 +4,7 @@ Books Concierge (2017 version)
 * [What is this?](#what-is-this)
 * [Assumptions](#assumptions)
 * [What's in here?](#whats-in-here)
+* [Project Lifcycle](#project-lifecycle)
 * [Bootstrap the project](#bootstrap-the-project)
 * [Hide project secrets](#hide-project-secrets)
 * [Save media assets](#save-media-assets)
@@ -68,14 +69,81 @@ The project contains the following folders and important files:
 Project lifecycle
 -----------------
 
-TODO: Since this is an annual project, document how to get this project up and running each year.  Give some indication of when these steps should happen, e.g. "one month before launch".
+Since this is an annual project and a collaboration between multiple teams, it's useful to know the start-to-finish process so everyone's aware of the dependencies between teams.
+
+This is based on the timeline laid out in a conversation between Nicole Cohen and Geoff Hing in September 2017.
+
+### Copy project code
+
+TODO: Define when this happens.
+
+The Visuals Team makes a copy of the project code and pushes it to a new repostory on GitHub.
 
 * Copy project code?  TODO: Define whether this means copying files or forking the repo or something else.
 * Push copy to a new GitHub repository.
 * Create a new version of the copy spreadsheet.
-* Create a new version of the books spreadsheet.
 * Create a testing version of the books spreadsheet that includes ISBN values for book records.
-* ???
+
+### January - Create a new version of the books spreadsheet
+
+The Arts Desk creates a new version of the books spreadsheet by copying the previous years.  This happens early on in the project because staff wants to add books right away.
+
+### Late September - Share books spreadsheet with visuals team
+
+The arts desk shares the books spreadsheet with the visuals team.  They update the `app_config` module to reflect that sheet's document ID.
+
+### Early October - Reach out to staff and critics
+
+By early October, the Arts Desk will have reached out to staff and critics to write reviews. Staff is contacted first.  Staff and reviewers will call dibs on the books they want to review a few weeks after the initial call-out.
+
+### Mid October - Send assignments
+
+The Arts Desk sends assignments for reviews.
+
+### Late October - Add additional book data fields
+
+The Arts Desk will add in additional fields for book records, such as ISBNs.  They usually do this in one fell swoop and often use an intern to do the work.  Because ISBNs are required to pull cover images, the Visuals team uses a test version of the spreadsheet, usually with previous year's data to test the rig.
+
+### End of October - All write-ups due
+
+The Visuals Team publishes the site to staging with the most recent book list and a first pass at colors.
+
+### Mid November - Copy editing
+
+The Visuals Team publishes the site to staging with the most recent book list and finalized colors.
+
+This facilitates copy editing, which is a drawn out process that goes all the way until launch.
+
+### Late November - Generate promo image
+
+The Visuals Team runs a script to generate the promo image, a composite of book cover images.  This happens later than sharing the staging site because the book list can change.
+
+### Late November - Set up stub page in Seamus
+
+The Arts Desk sets up a stub page in Seamus.  Either the Arts Desk or Visuals emails Online Tech. to tell them to redirect the stub page to the app URL.
+
+### Late November - Tag meeting
+
+The Arts Desk meets to determine if the tags they have selected for the books make books easy for users to discover.
+
+Prior to this meeting, the Visuals team generates a tag audit report and republishes the site to staging.
+
+### Late November - Get edits back from copy editors
+
+### Before launch - Make a launch plan
+
+Before launch, the Arts Desk coordinates with the people who produce the home page and social media teams ot make a plan for launching the site.
+
+### Early December - Launch!
+
+On launch day the Arts Desk pays close attention to Chartbeat and other analytics.
+
+### Shortly after launch - Generate analytics report
+
+The Visuals Team generates a [report](https://docs.google.com/document/d/1fLbphzWXt_I8LSf6iW7urJCBeo1B-MX5iyWIfCOH-xA/edit#) of how the app did in it's first few days that includes total traffic, unique views, info about individual tag traffic.
+
+
+
 
 Bootstrap the project
 ---------------------
