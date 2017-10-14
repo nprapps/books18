@@ -5,6 +5,7 @@ Books Concierge (2017 version)
 * [Assumptions](#assumptions)
 * [What's in here?](#whats-in-here)
 * [Project Lifcycle](#project-lifecycle)
+* [Data Flow](#data-flow)
 * [Bootstrap the project](#bootstrap-the-project)
 * [Hide project secrets](#hide-project-secrets)
 * [Save media assets](#save-media-assets)
@@ -142,7 +143,222 @@ On launch day the Arts Desk pays close attention to Chartbeat and other analytic
 
 The Visuals Team generates a [report](https://docs.google.com/document/d/1fLbphzWXt_I8LSf6iW7urJCBeo1B-MX5iyWIfCOH-xA/edit#) of how the app did in it's first few days that includes total traffic, unique views, info about individual tag traffic.
 
+Data Flow
+---------
 
+TODO: Better summarize the data flow.
+
+The books, their reviews and other metadata originate in a Google Spreadsheet, this is serialized as ? and passed to Underscore templates to render the user-facing HTML.
+
+The book reviews start in a Google Spreadsheet.
+
+The [Load books and covers](#load-books-and-covers) section describes the configuration needed to tell this project's code how to access the book list spreasdsheet.
+
+The `data.load_books` Fabric task downloads the books spreadsheet as CSV and saves it as `data/books.csv`.  It then takes the downloaded CSV file, does some validation and normalization of the data (which is mostly handled inside the `Book` class) and stores the output as JSON in `www/static-data/books.json`.  The task also writes some other CSV files, but I'm not sure what they do.
+
+A sample book entry in `www/static-data/books.json` looks like this:
+
+```
+{
+  "author": "Mona Awad",
+  "book_seamus_id": "472159879",
+  "external_links": [],
+  "hide_ibooks": "",
+  "html_text": false,
+  "isbn": "0143128485",
+  "isbn13": "9780143128489",
+  "itunes_id": "998405272",
+  "links": [
+    {
+      "category": "Feature",
+      "title": "NPR's Book Concierge: Our Guide To 2016's Great Reads",
+      "url": "http://www.npr.org/2016/12/06/503179028/nprs-book-concierge-our-guide-to-2016s-great-reads"
+    },
+    {
+      "category": "Interview",
+      "title": "'You Cannot Shame Me': 2 New Books Tear Down 'Fat Girl' Stereotypes",
+      "url": "http://www.npr.org/2016/03/31/472132175/you-cannot-shame-me-two-new-books-tear-down-fat-girl-stereotypes"
+    },
+    {
+      "category": "Read an excerpt",
+      "title": "",
+      "url": "http://www.npr.org/472159879#excerpt"
+    }
+  ],
+  "reviewer": "Lynn Neary",
+  "reviewer_id": "correspondent, Arts Desk",
+  "reviewer_link": "http://www.npr.org/people/2100948/lynn-neary",
+  "slug": "13-ways-of-looking-at-a-fat-girl-fiction",
+  "tags": [
+    "staff-picks",
+    "book-club-ideas",
+    "identity-and-culture",
+    "realistic-fiction"
+  ],
+  "teaser": "The title of this book might be off-putting \u2014 after all, the word \"fat\" makes people uncomfortable. We prefer euphemisms like \"chubby\" or \"big.\" But novelist Mona Awad ...",
+  "text": "The title of this book might be off-putting \u2014 after all, the word \"fat\" makes people uncomfortable. We prefer euphemisms like \"chubby\" or \"big.\" But novelist Mona Awad uses the word deliberately. She wants her readers to understand how a struggle with body image can take over a life. Lizzie, the fat girl of the title, is an insecure, overweight young woman who lets men take advantage of her in humiliating ways. Later we meet her as an older, thin woman, obsessed with staying fit, but big or small, happiness eludes her. Awad is a fine writer with a keen sense of black humor, which makes this often sad story more entertaining than you might expect.",
+  "title": "13 Ways Of Looking At A Fat Girl: Fiction"
+}
+```
+
+The `render.render_all` Fabric task iterates through all the Flask views and renders them to static files.  This includes the `index` view in `app.py` which loads `www/static-data/books.json` and renders the JSON as the `window.BOOKS` JavaScript variable in a `<script>` tag near the bottom of the page.  The template rendered by this view is `templates/index.html`.
+
+The `on_book_hash()` function in `www/js/app.js` selects a book object from the `BOOKS` array and passes it to the `JST.book_modal` template function as the `book` context variable.  That template is defined in `jst/book_modal.html`.
+
+Books Spreadsheet Fields
+------------------------
+
+### User-facing fields
+
+These fields are listed in the order in which they're rendered in the `jst/book_modal.html` template.
+
+#### TITLE
+
+Example values: `13 Ways Of Looking At A Fat Girl: Fiction`
+
+JSON/template property: title
+
+#### AUTHOR
+
+JSON/template property: author
+
+Example values: `Mona Awad`
+
+This property is optional.
+
+#### GENRE
+
+JSON/template property: genre
+
+Example values: `Fiction`
+
+This property is optional.
+
+#### TAGS
+
+JSON/template property: tags
+
+Example values: `Mysteries & Thrillers, Staff Picks`
+
+This property is optional.
+
+#### text
+
+The book desription/review.
+
+JSON/template property: text
+
+Example values: `Count Alexander Rostov is a resourceful man who loves the finer things in life. When he is sentenced by the Bolsheviks to a lifetime of house arrest in a tiny room in the attic of Moscow's best hotel, he uses his charm and wit to build a new life that is in some ways richer than his old one. While wars both hot and cold rage in the outside world, Count Rostov finds purpose and people to love within the confines of the Metropol. The count, says author Amor Towles, has a <a href="http:// http://www.npr.org/2016/09/06/492434255/idea-for-gentleman-in-moscow-came-from-many-nights-in-luxury-hotels" target="_blank" >will to joy.</a> No wonder, then, that <em>A Gentleman in Moscow</em> is a joyful read.`
+
+#### html text
+
+JSON/template property: html\_text
+
+While referenced in the template, it doesn't appear that this value will ever be rendered by the template logic.
+
+#### REVIEWER
+
+JSON/template property: reviewer
+
+Example values: `Lynn Neary`
+
+This property is optional.
+
+#### REVIEWER LINK
+
+JSON/Template property: reviewer\_link
+
+Example values: `http://www.npr.org/people/497524072/natalie-winston`
+
+This property is optional.
+
+#### REVIEWER ID
+
+JSON/template property: reviewer\_id
+
+Example values: `correspondent, Arts Desk`, `<em>Weekend Edition</em> staff`
+
+This property is optional.
+
+#### isbn
+
+JSON/template property: isbn
+
+Example values: `0812992989`
+
+#### hide\_ibooks
+
+JSON/template property: hide\_ibooks
+
+Example values: ``, `TRUE`
+
+This property is optional.
+
+#### itunes\_id
+
+JSON/template property: itunes\_id
+
+Example values: `998405272`
+
+This field will not be rendered if `hide_ibooks` is `TRUE`.
+
+It will only be used to generate the ITunes URL if the `USE_ITUNES_ID` is set to `True`.
+
+#### book\_seamus\_id
+
+JSON/template property: links
+
+Example values: `498577009`
+
+This property is optional.
+
+#### EXTERNAL LINKS HTML
+
+JSON/template property: external_links
+
+Example values: `<li class="external-link">KMUW: <strong><a href="http://kmuw.org/post/book-review-great-reckoning-lyrical-whodunnit" target="_blank">Book Review: 'A Great Reckoning' Is A Lyrical Whodunnit</a></strong></li>`
+
+This property is optional.
+
+### Internal fields
+
+These fields are used for project management purposes and are not output as JSON or rendered to the end user.
+
+#### EDITOR (internal use)
+
+Example values: `Beth`
+
+#### COST
+
+Example values: `0`, `40`
+
+#### Assigned (1=yes)
+
+
+#### Author Diversity (1=yes, 0=no)
+
+Example values: `0`, `1`
+
+###	REVIEWER DIVERSITY (1=yes, 0=no)
+
+#### CONTACTED?
+
+Example values: ``, `1`
+
+
+### Unused fields
+
+These fields didn't seem to be filled out for any of the book rows in the 2016 spreadsheet.
+
+#### asin
+
+#### oclc
+
+#### genre (internal use)
+
+#### fact-checking notes
+
+#### Gender (1=woman, 0=man)
 
 
 Bootstrap the project
