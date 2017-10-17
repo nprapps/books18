@@ -6,6 +6,7 @@ Books Concierge (2017 version)
 * [What's in here?](#whats-in-here)
 * [Project Lifcycle](#project-lifecycle)
 * [Data Flow](#data-flow)
+* [Books Spreadsheet Fields](#books-spreadsheet-fields)
 * [Bootstrap the project](#bootstrap-the-project)
 * [Hide project secrets](#hide-project-secrets)
 * [Save media assets](#save-media-assets)
@@ -226,13 +227,6 @@ Example values: `Mona Awad`
 
 This property is optional.
 
-#### GENRE
-
-JSON/template property: genre
-
-Example values: `Fiction`
-
-This property is optional.
 
 #### TAGS
 
@@ -294,6 +288,10 @@ Example values: ``, `TRUE`
 
 This property is optional.
 
+This value is populated by the visuals team.
+
+TODO: Explain how it is populated.
+
 #### itunes\_id
 
 JSON/template property: itunes\_id
@@ -302,7 +300,11 @@ Example values: `998405272`
 
 This field will not be rendered if `hide_ibooks` is `TRUE`.
 
-It will only be used to generate the ITunes URL if the `USE_ITUNES_ID` is set to `True`.
+It will only be used to generate the iTunes URL if the `USE_ITUNES_ID` is set to `True`.
+
+This value is populated by the visuals team.
+
+TODO: Explain how it is populated.
 
 #### book\_seamus\_id
 
@@ -331,6 +333,14 @@ Example values: `Beth`
 #### COST
 
 Example values: `0`, `40`
+
+#### GENRE
+
+JSON/template property: genre
+
+Example values: `Fiction`
+
+This property is optional.
 
 #### Assigned (1=yes)
 
