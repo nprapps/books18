@@ -15,6 +15,7 @@ Books Concierge (2017 version)
 * [COPY configuration](#copy-configuration)
 * [COPY editing](#copy-editing)
 * [Load books and covers](#load-books-and-covers)
+* [Get iTunes IDs](#get-itunes-ids)
 * [Arbitrary Google Docs](#arbitrary-google-docs)
 * [Run Python tests](#run-python-tests)
 * [Run Javascript tests](#run-javascript-tests)
@@ -581,6 +582,31 @@ single command:
 ```
 fab update
 ```
+
+Get iTunes IDs
+--------------
+
+To create links that allow users to purchase books in the iTunes store, we need to add IDs to the `itunes_id` column of the books spreadsheet.  There is a Fabric task, `data.get_books_itunes_ids` that you can run to output a CSV from which you can copy and paste the IDs into the Books Google Spreadsheet.
+
+There are however, a few caveats that are important to keep in mind.
+
+This command takes a long time to run in order to get around the rate limiting of the iTunes search API.  It's probably best to run it first thing in the morning or to let it run overnight.
+
+You'll want to make sure you update the book data before running this command.  Otherwise, the rows won't line up when you copy and paste into the Google Spreadsheet.  For the same reason, you will want to run the command when the book list is in a pretty stable state.
+
+Now that you know the caveats, here's the task:
+
+```
+fab data.get_books_itunes_ids
+```
+
+By default, the command will read the books from `data/books.csv` and output the resulting iTunes IDs to `data/itunes_ids.csv`, but you can override either path:
+
+```
+fab data.get_books_itunes_ids:input_filename=data/new_books.csv,output_filename=data/new_books_itunes_ids.csv
+```
+
+This might be useful if you wanted to only get IDs for a subset of books that were added to the spreadsheet after the last time you fetched IDs.
 
 Arbitrary Google Docs
 ----------------------

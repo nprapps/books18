@@ -437,11 +437,11 @@ class Book(object):
         slug = slug[:254]
         return slug
 
-    def _process_itunes_reference(self, title):
+    @classmethod
+    def process_itunes_reference(cls, title):
         """
         Use itunes search API
         """
-        time.sleep(1)
         itunes_id = None
         search_api_tpl = 'https://itunes.apple.com/search'
         main_title = title.split(':')[0]
@@ -478,7 +478,10 @@ class Book(object):
             logger.warning('did not receive a 200 when using itunes search api')
         return itunes_id
 
-
+    def fetch_itunes_id(self):
+        """Retrieve a book's iTunes ID from the iTunes Search API"""
+        self.itunes_id = self.process_itunes_reference(self.title)
+        return self
 
 
 def get_books_csv():
@@ -739,3 +742,45 @@ def make_promotion_thumb():
     cropped = image.crop((0, 0, final_width, min_height))
     # via http://stackoverflow.com/questions/1405602/how-to-adjust-the-quality-of-a-resized-image-in-python-imaging-library
     cropped.save('www/assets/img/covers.jpg', quality=95)
+
+@task
+def get_books_itunes_ids(input_filename=os.path.join('data', 'books.csv'),
+        output_filename=os.path.join('data', 'itunes_ids.csv')):
+    """
+    Retrieve iTunes IDs corresponding to books in the books spreadsheet.
+
+    """
+    fieldnames = [
+        # Only include enough fields to identify the book
+        'title',
+        'isbn',
+        'itunes_id',
+    ]
+
+    with open(input_filename) as readfile:
+        reader = CSVKitDictReader(readfile, encoding='utf-8')
+        reader.fieldnames = [name.strip().lower() for name in reader.fieldnames]
+
+        with open(output_filename, 'wb') as fout:
+            writer = CSVKitDictWriter(fout, fieldnames=fieldnames)
+            writer.writeheader()
+
+            for book in reader:
+                # Note that we don't create Book objects because the
+                # parsing/lookup takes too long and we only need to lookup the
+                # iTunes ID.
+
+                output_book = {k: book[k] for k in fieldnames}
+
+                if book['title']:
+                    output_book['itunes_id'] = Book.process_itunes_reference(book['title'])
+
+                writer.writerow(output_book)
+
+                # We have to wait to avoid API throttling.  According to
+                # the Enterprise Partner Feed documentation, the limit is ~20
+                # calls per minute.  See
+                # https://affiliate.itunes.apple.com/resources/documentation/itunes-enterprise-partner-feed/
+                # I had previously tried a sleep time of 5 and many requests
+                # failed
+                time.sleep(10)
