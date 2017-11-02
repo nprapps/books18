@@ -608,6 +608,27 @@ fab data.get_books_itunes_ids:input_filename=data/new_books.csv,output_filename=
 
 This might be useful if you wanted to only get IDs for a subset of books that were added to the spreadsheet after the last time you fetched IDs.
 
+Get Goodreads slugs
+--------------
+
+To generate links that allow users to access a book's Goodreads page, we need to get the Goodreads slug for each book. To get these slugs, you can run the Fabric task `data.get_books_goodreads_slugs`, which will output a CSV from which you can copy and paste the slug into the `goodreads_slug` column of the Books Google Spreadsheet.
+
+Since this command uses the Goodreads API, the same caveats as the iTunes ID generator apply. You do need a developer key to use the API, however - this key is currently stored in the environment variable secrets as `GOODREADS_API_KEY`. If you need to replace this key, it's fairly simple to generate a new one from the [Goodreads API page](https://www.goodreads.com/api).
+
+Here's the task:
+
+```
+fab data.get_books_goodreads_slugs
+```
+
+By default, the command will read the books from `data/books.csv` and output the resulting iTunes IDs to `data/goodreads_slugs.csv`, but you can override either path:
+
+```
+fab data.get_books_goodreads_slugs:input_filename=data/new_books.csv,output_filename=data/new_books_goodreads_slugs.csv
+```
+
+This might be useful if you wanted to only get the Goodreads slugs for a subset of books that were added to the spreadsheet after the last time you fetched them.
+
 Arbitrary Google Docs
 ----------------------
 Sometimes, our projects need to read data from a Google Doc that's not involved with the COPY rig. In this case, we've got a class for you to download and parse an arbitrary Google Doc to a CSV.

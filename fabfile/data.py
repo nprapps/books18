@@ -254,6 +254,7 @@ class Book(object):
     tags = None
     book_seamus_id = None
     itunes_id = None
+    goodreads_slug = None
     author_seamus_id = None
     author_seamus_headline = None
 
@@ -308,6 +309,7 @@ class Book(object):
         # ISBN redirection is broken use search API to retrieve itunes_id
         # added the column to the spreadsheet so ignore if it is already calculated
         self.itunes_id = kwargs['itunes_id']
+        self.goodreads_slug = kwargs['goodreads_slug']
         if (kwargs['book_seamus_id']):
             # Only search for links if there's a seamus ID
             self.links = self._process_links(kwargs['book_seamus_id'])
@@ -315,6 +317,7 @@ class Book(object):
             self.links = []
         self.external_links = self._process_external_links(kwargs['external links html'])
         self.tags = self._process_tags(kwargs['tags'])
+
 
     def _process_text(self, value):
         """
