@@ -32,6 +32,7 @@ from fabric.api import task
 from facebook import GraphAPI
 from twitter import Twitter, OAuth
 from csvkit.py2 import CSVKitDictReader, CSVKitDictWriter
+from xml.etree import ElementTree
 
 logging.basicConfig(format=app_config.LOG_FORMAT)
 logger = logging.getLogger(__name__)
@@ -483,6 +484,51 @@ class Book(object):
         self.itunes_id = self.process_itunes_reference(self.title)
         return self
 
+    @classmethod
+    def process_goodreads_reference(cls, isbn):
+        """
+        Use GoodReads search API
+        """
+        secrets = app_config.get_secrets()
+
+        goodreads_slug = None
+        search_api_tpl = 'https://www.goodreads.com/search/index.xml'
+
+        params = {
+            'key': secrets['GOODREADS_API_KEY'],
+            'q': isbn.encode('utf-8')
+        }
+        query_string = urlencode(params)
+
+        search_api_url = '%s?%s' % (search_api_tpl, query_string)
+        logger.info('url: %s' % search_api_url)
+
+        # Get search api results.
+        r = requests.get(search_api_url, params=params)
+
+        if r.status_code == 200:
+            tree = ElementTree.fromstring(r.content)
+            best_book = tree.find('.//best_book')
+            if best_book is not None:
+                goodreads_id = best_book.find('id').text
+                goodreads_title = best_book.find('title').text
+                goodreads_title = re.split(r'[:(]',goodreads_title)[0]
+                goodreads_title = goodreads_title.strip()
+                goodreads_title = re.sub(r'[^a-zA-Z0-9\'\s\-]', '', goodreads_title)
+                goodreads_title = goodreads_title.replace(" ","-").replace("'","-")
+                goodreads_slug = '%s-%s' % (goodreads_id, goodreads_title)
+            else:
+                logger.warning('could not find a matching book for ISBN %s' % isbn)
+        else:
+            logger.warning('did not receive a 200 when using Goodreads search api')
+        return goodreads_slug
+
+    def fetch_goodreads_slug(self):
+        """Retrieve a book's Goodreads slug from the Goodreads Search API"""
+        self.goodreads_slug = self.process_goodreads_reference(self.isbn)
+        return self
+
+
 
 def get_books_csv():
     """
@@ -784,3 +830,38 @@ def get_books_itunes_ids(input_filename=os.path.join('data', 'books.csv'),
                 # I had previously tried a sleep time of 5 and many requests
                 # failed
                 time.sleep(10)
+
+@task
+def get_books_goodreads_slugs(input_filename=os.path.join('data', 'books.csv'),
+        output_filename=os.path.join('data', 'goodreads_slugs.csv')):
+    """
+    Retrieve GoodReads slugs corresponding to books in the books spreadsheet.
+
+    """
+    fieldnames = [
+        # Only include enough fields to identify the book
+        'title',
+        'isbn',
+        'goodreads_slug'
+    ]
+
+    with open(input_filename) as readfile:
+        reader = CSVKitDictReader(readfile, encoding='utf-8')
+        reader.fieldnames = [name.strip().lower() for name in reader.fieldnames]
+
+        with open(output_filename, 'wb') as fout:
+            writer = CSVKitDictWriter(fout, fieldnames=fieldnames)
+            writer.writeheader()
+
+            for book in reader:
+
+                output_book = {'title': book['title'], 'isbn': book['isbn'], 'goodreads_slug': ''}
+
+                if book['isbn']:
+                    output_book['goodreads_slug'] = Book.process_goodreads_reference(book['isbn'])
+
+                writer.writerow(output_book)
+
+                # According to the Goodreads API documenation (https://www.goodreads.com/api/terms)
+                # the rate limit is 1 request per second.
+                time.sleep(2)
