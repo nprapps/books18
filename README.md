@@ -608,23 +608,23 @@ fab data.get_books_itunes_ids:input_filename=data/new_books.csv,output_filename=
 
 This might be useful if you wanted to only get IDs for a subset of books that were added to the spreadsheet after the last time you fetched IDs.
 
-Get Goodreads slugs
+Get Goodreads IDs
 --------------
 
-To generate links that allow users to access a book's Goodreads page, we need to get the Goodreads slug for each book. To get these slugs, you can run the Fabric task `data.get_books_goodreads_slugs`, which will output a CSV from which you can copy and paste the slug into the `goodreads_slug` column of the Books Google Spreadsheet.
+To generate links that allow users to access a book's Goodreads page, we need to get the Goodreads slug for each book. To get these slugs, you can run the Fabric task `data.get_books_goodreads_ids`, which will output a CSV from which you can copy and paste the slug into the `goodreads_id` column of the Books Google Spreadsheet.
 
 Since this command uses the Goodreads API, the same caveats as the iTunes ID generator apply. You do need a developer key to use the API, however - this key is currently stored in the environment variable secrets as `GOODREADS_API_KEY`. If you need to replace this key, it's fairly simple to generate a new one from the [Goodreads API page](https://www.goodreads.com/api).
 
 Here's the task:
 
 ```
-fab data.get_books_goodreads_slugs
+fab data.get_books_goodreads_ids
 ```
 
-By default, the command will read the books from `data/books.csv` and output the resulting iTunes IDs to `data/goodreads_slugs.csv`, but you can override either path:
+By default, the command will read the books from `data/books.csv` and output the resulting iTunes IDs to `data/goodreads_ids.csv`, but you can override either path:
 
 ```
-fab data.get_books_goodreads_slugs:input_filename=data/new_books.csv,output_filename=data/new_books_goodreads_slugs.csv
+fab data.get_books_goodreads_ids:input_filename=data/new_books.csv,output_filename=data/new_books_goodreads_ids.csv
 ```
 
 This might be useful if you wanted to only get the Goodreads slugs for a subset of books that were added to the spreadsheet after the last time you fetched them.

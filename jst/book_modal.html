@@ -53,8 +53,8 @@
                     <a href="http://www.indiebound.org/book/<%= book.isbn13 %>?aff=NPR" target="_blank" class="purchase-link" onclick="ANALYTICS.trackEvent('indiebound', '<%= book.slug %>');"><i class="icon icon-basket"></i>Independent&nbsp;Booksellers</a>
                     <% } %>
 
-                    <% if (book.goodreads_slug != null) { %>
-                    <a href="https://www.goodreads.com/book/show/<%= book.goodreads_slug %>" target="_blank" class="purchase-link" onclick="ANALYTICS.trackEvent('goodreads', '<%= book.slug %>');"><i class="icon icon-basket"></i>Goodreads</a>
+                    <% if (book.goodreads_id != null) { %>
+                    <a href="https://www.goodreads.com/book/show/<%= book.goodreads_id %>" target="_blank" class="purchase-link" onclick="ANALYTICS.trackEvent('goodreads', '<%= book.slug %>');"><i class="icon icon-basket"></i>Goodreads</a>
                     <% } %>
                 </p>
 

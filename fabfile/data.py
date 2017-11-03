@@ -309,7 +309,7 @@ class Book(object):
         # ISBN redirection is broken use search API to retrieve itunes_id
         # added the column to the spreadsheet so ignore if it is already calculated
         self.itunes_id = kwargs['itunes_id']
-        self.goodreads_slug = kwargs['goodreads_slug']
+        self.goodreads_id = kwargs['goodreads_id']
         if (kwargs['book_seamus_id']):
             # Only search for links if there's a seamus ID
             self.links = self._process_links(kwargs['book_seamus_id'])
@@ -494,7 +494,7 @@ class Book(object):
         """
         secrets = app_config.get_secrets()
 
-        goodreads_slug = None
+        goodreads_id = None
         search_api_tpl = 'https://www.goodreads.com/search/index.xml'
 
         params = {
@@ -514,21 +514,15 @@ class Book(object):
             best_book = tree.find('.//best_book')
             if best_book is not None:
                 goodreads_id = best_book.find('id').text
-                goodreads_title = best_book.find('title').text
-                goodreads_title = re.split(r'[:(]',goodreads_title)[0]
-                goodreads_title = goodreads_title.strip()
-                goodreads_title = re.sub(r'[^a-zA-Z0-9\'\s\-]', '', goodreads_title)
-                goodreads_title = goodreads_title.replace(" ","-").replace("'","-")
-                goodreads_slug = '%s-%s' % (goodreads_id, goodreads_title)
             else:
                 logger.warning('could not find a matching book for ISBN %s' % isbn)
         else:
             logger.warning('did not receive a 200 when using Goodreads search api')
-        return goodreads_slug
+        return goodreads_id
 
-    def fetch_goodreads_slug(self):
+    def fetch_goodreads_id(self):
         """Retrieve a book's Goodreads slug from the Goodreads Search API"""
-        self.goodreads_slug = self.process_goodreads_reference(self.isbn)
+        self.goodreads_id = self.process_goodreads_reference(self.isbn)
         return self
 
 
@@ -835,8 +829,8 @@ def get_books_itunes_ids(input_filename=os.path.join('data', 'books.csv'),
                 time.sleep(10)
 
 @task
-def get_books_goodreads_slugs(input_filename=os.path.join('data', 'books.csv'),
-        output_filename=os.path.join('data', 'goodreads_slugs.csv')):
+def get_books_goodreads_ids(input_filename=os.path.join('data', 'books.csv'),
+        output_filename=os.path.join('data', 'goodreads_ids.csv')):
     """
     Retrieve GoodReads slugs corresponding to books in the books spreadsheet.
 
@@ -845,7 +839,7 @@ def get_books_goodreads_slugs(input_filename=os.path.join('data', 'books.csv'),
         # Only include enough fields to identify the book
         'title',
         'isbn',
-        'goodreads_slug'
+        'goodreads_id'
     ]
 
     with open(input_filename) as readfile:
@@ -858,10 +852,10 @@ def get_books_goodreads_slugs(input_filename=os.path.join('data', 'books.csv'),
 
             for book in reader:
 
-                output_book = {'title': book['title'], 'isbn': book['isbn'], 'goodreads_slug': ''}
+                output_book = {'title': book['title'], 'isbn': book['isbn'], 'goodreads_id': ''}
 
                 if book['isbn']:
-                    output_book['goodreads_slug'] = Book.process_goodreads_reference(book['isbn'])
+                    output_book['goodreads_id'] = Book.process_goodreads_reference(book['isbn'])
 
                 writer.writerow(output_book)
 
