@@ -309,7 +309,10 @@ class Book(object):
         # ISBN redirection is broken use search API to retrieve itunes_id
         # added the column to the spreadsheet so ignore if it is already calculated
         self.itunes_id = kwargs['itunes_id']
-        self.goodreads_id = kwargs['goodreads_id']
+
+        if kwargs['goodreads_id'] != "":
+            self.goodreads_id = kwargs['goodreads_id']
+
         if (kwargs['book_seamus_id']):
             # Only search for links if there's a seamus ID
             self.links = self._process_links(kwargs['book_seamus_id'])
