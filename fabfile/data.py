@@ -445,7 +445,7 @@ class Book(object):
         return slug
 
     @classmethod
-    def process_itunes_reference(cls, title):
+    def get_itunes_id(cls, title):
         """
         Use itunes search API
         """
@@ -487,11 +487,11 @@ class Book(object):
 
     def fetch_itunes_id(self):
         """Retrieve a book's iTunes ID from the iTunes Search API"""
-        self.itunes_id = self.process_itunes_reference(self.title)
+        self.itunes_id = self.get_itunes_id(self.title)
         return self
 
     @classmethod
-    def process_goodreads_reference(cls, isbn):
+    def get_goodreads_id(cls, isbn):
         """
         Use GoodReads search API
         """
@@ -507,7 +507,6 @@ class Book(object):
         query_string = urlencode(params)
 
         search_api_url = '%s?%s' % (search_api_tpl, query_string)
-        logger.info('url: %s' % search_api_url)
 
         # Get search api results.
         r = requests.get(search_api_url, params=params)
@@ -525,7 +524,7 @@ class Book(object):
 
     def fetch_goodreads_id(self):
         """Retrieve a book's Goodreads slug from the Goodreads Search API"""
-        self.goodreads_id = self.process_goodreads_reference(self.isbn)
+        self.goodreads_id = self.get_goodreads_id(self.isbn)
         return self
 
 
@@ -819,7 +818,7 @@ def get_books_itunes_ids(input_filename=os.path.join('data', 'books.csv'),
                 output_book = {k: book[k] for k in fieldnames}
 
                 if book['title']:
-                    output_book['itunes_id'] = Book.process_itunes_reference(book['title'])
+                    output_book['itunes_id'] = Book.get_itunes_id(book['title'])
 
                 writer.writerow(output_book)
 
@@ -858,7 +857,7 @@ def get_books_goodreads_ids(input_filename=os.path.join('data', 'books.csv'),
                 output_book = {'title': book['title'], 'isbn': book['isbn'], 'goodreads_id': ''}
 
                 if book['isbn']:
-                    output_book['goodreads_id'] = Book.process_goodreads_reference(book['isbn'])
+                    output_book['goodreads_id'] = Book.get_goodreads_id(book['isbn'])
 
                 writer.writerow(output_book)
 

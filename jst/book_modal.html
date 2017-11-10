@@ -54,7 +54,7 @@
                     <% } %>
 
                     <% if (book.goodreads_id != null) { %>
-                    <a href="https://www.goodreads.com/book/show/<%= book.goodreads_id %>" target="_blank" class="purchase-link" onclick="ANALYTICS.trackEvent('goodreads', '<%= book.slug %>');"><i class="icon icon-basket"></i>Goodreads</a>
+                    <a href="https://www.goodreads.com/book/show/<%= book.goodreads_id %>" target="_blank" class="purchase-link" onclick="ANALYTICS.trackEvent('goodreads', '<%= book.slug %>');"><i class="icon icon-bookmark"></i>View on Goodreads</a>
                     <% } %>
                 </p>
 

@@ -1,7 +1,7 @@
 <?xml version="1.0" standalone="no"?>
 <!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
 <svg xmlns="http://www.w3.org/2000/svg">
-<metadata>Copyright (C) 2016 by original authors @ fontello.com</metadata>
+<metadata>Copyright (C) 2017 by original authors @ fontello.com</metadata>
 <defs>
 <font id="npr-app-template" horiz-adv-x="1000" >
 <font-face font-family="npr-app-template" font-weight="400" font-stretch="normal" units-per-em="1000" ascent="850" descent="-150" />
@@ -35,6 +35,8 @@
 <glyph glyph-name="home" unicode="&#xe80d;" d="M885 575l276 0 0-90-1161 0 0 90 548 0 0 173 337 0 0-173z m-777-134l943 0 0-489-568 0 0 301-170 0 0-301-205 0 0 489z m671-245l0 177-146 0 0-177 146 0z m191 0l0 177-146 0 0-177 146 0z" horiz-adv-x="1161" />
 
 <glyph glyph-name="town-hall" unicode="&#xe80e;" d="M475 800l-375-250 750 0z m-325-300c-28 0-50-22-50-50l0-350-87-150c-8-13-13-18-13-25 0-25 32-25 50-25l850 0c18 0 50 0 50 25 0 7-4 11-12 25l-88 150 0 350c0 28-22 50-50 50z m100-100c28 0 45-23 50-50l0-300-100 0 0 300c0 28 22 50 50 50z m225 0c28 0 50-22 50-50l0-300-100 0 0 300c0 28 22 50 50 50z m225 0c28 0 50-22 50-50l0-300-100 0 0 300c0 28 22 50 50 50z" horiz-adv-x="950" />
+
+<glyph glyph-name="bookmark" unicode="&#xe80f;" d="M650 779q12 0 24-5 19-8 29-23t11-35v-719q0-19-11-35t-29-23q-10-4-24-4-27 0-47 18l-246 236-246-236q-20-19-46-19-13 0-25 5-18 7-29 23t-11 35v719q0 19 11 35t29 23q12 5 25 5h585z" horiz-adv-x="714.3" />
 
 <glyph glyph-name="basket" unicode="&#xe839;" d="M357-7q0-29-21-50t-50-22-50 22-22 50 22 50 50 21 50-21 21-50z m500 0q0-29-21-50t-50-22-50 22-22 50 22 50 50 21 50-21 21-50z m72 607v-286q0-13-10-23t-22-12l-583-68q7-34 7-40 0-8-13-35h513q15 0 26-11t10-25-10-25-26-11h-571q-14 0-25 11t-11 25q0 6 5 18t9 20 12 22 8 17l-98 459h-114q-15 0-25 10t-11 25 11 26 25 10h143q9 0 16-3t10-9 8-14 4-14 3-17 3-14h670q14 0 25-11t11-25z" horiz-adv-x="928.6" />
 

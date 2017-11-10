@@ -16,6 +16,7 @@ Books Concierge (2017 version)
 * [COPY editing](#copy-editing)
 * [Load books and covers](#load-books-and-covers)
 * [Get iTunes IDs](#get-itunes-ids)
+* [Get Goodreads IDs](#get-goodreads-ids)
 * [Arbitrary Google Docs](#arbitrary-google-docs)
 * [Run Python tests](#run-python-tests)
 * [Run Javascript tests](#run-javascript-tests)
@@ -302,6 +303,16 @@ Example values: `998405272`
 This field will not be rendered if `hide_ibooks` is `TRUE`.
 
 It will only be used to generate the iTunes URL if the `USE_ITUNES_ID` is set to `True`.
+
+This value is populated by the visuals team.
+
+TODO: Explain how it is populated.
+
+#### goodreads\_id
+
+JSON/template property: goodreads\_id
+
+Example values: `31915219`
 
 This value is populated by the visuals team.
 
@@ -613,7 +624,13 @@ Get Goodreads IDs
 
 To generate links that allow users to access a book's Goodreads page, we need to get the Goodreads slug for each book. To get these slugs, you can run the Fabric task `data.get_books_goodreads_ids`, which will output a CSV from which you can copy and paste the slug into the `goodreads_id` column of the Books Google Spreadsheet.
 
-Since this command uses the Goodreads API, the same caveats as the iTunes ID generator apply. You do need a developer key to use the API, however - this key is currently stored in the environment variable secrets as `GOODREADS_API_KEY`. If you need to replace this key, it's fairly simple to generate a new one from the [Goodreads API page](https://www.goodreads.com/api).
+There are a couple of caveats when running this command.
+
+This command takes around 15-20 minutes to bypass the rate limiting of the iTunes search API.  It's probably best to run it first thing in the morning or to let it run overnight.
+
+You'll want to make sure you update the book data before running this command.  Otherwise, the rows won't line up when you copy and paste into the Google Spreadsheet.  For the same reason, you will want to run the command when the book list is in a pretty stable state.
+
+Since this command uses the Goodreads API, the same caveats as the iTunes ID generator apply. You do need a developer key to use the API, however. You should set this key as an environment variable like so: `books17_GOODREADS_API_KEY=YOUR_KEY_HERE` . If you need to replace this key, it's fairly simple to generate a new one from the [Goodreads API page](https://www.goodreads.com/api).
 
 Here's the task:
 
