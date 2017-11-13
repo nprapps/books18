@@ -55,6 +55,8 @@ analytics.txt
 www/static-data/*
 data/books.csv
 data/tag-audit.csv
+data/goodreads_ids.csv
+data/itunes_ids.csv
 data/book_reviews.csv
 data/test*.csv
 www/share/*

@@ -32,6 +32,7 @@ from fabric.api import task
 from facebook import GraphAPI
 from twitter import Twitter, OAuth
 from csvkit.py2 import CSVKitDictReader, CSVKitDictWriter
+from xml.etree import ElementTree
 
 logging.basicConfig(format=app_config.LOG_FORMAT)
 logger = logging.getLogger(__name__)
@@ -253,6 +254,7 @@ class Book(object):
     tags = None
     book_seamus_id = None
     itunes_id = None
+    goodreads_slug = None
     author_seamus_id = None
     author_seamus_headline = None
 
@@ -307,6 +309,10 @@ class Book(object):
         # ISBN redirection is broken use search API to retrieve itunes_id
         # added the column to the spreadsheet so ignore if it is already calculated
         self.itunes_id = kwargs['itunes_id']
+
+        if kwargs['goodreads_id'] != "":
+            self.goodreads_id = kwargs['goodreads_id']
+
         if (kwargs['book_seamus_id']):
             # Only search for links if there's a seamus ID
             self.links = self._process_links(kwargs['book_seamus_id'])
@@ -314,6 +320,7 @@ class Book(object):
             self.links = []
         self.external_links = self._process_external_links(kwargs['external links html'])
         self.tags = self._process_tags(kwargs['tags'])
+
 
     def _process_text(self, value):
         """
@@ -438,7 +445,7 @@ class Book(object):
         return slug
 
     @classmethod
-    def process_itunes_reference(cls, title):
+    def get_itunes_id(cls, title):
         """
         Use itunes search API
         """
@@ -480,8 +487,46 @@ class Book(object):
 
     def fetch_itunes_id(self):
         """Retrieve a book's iTunes ID from the iTunes Search API"""
-        self.itunes_id = self.process_itunes_reference(self.title)
+        self.itunes_id = self.get_itunes_id(self.title)
         return self
+
+    @classmethod
+    def get_goodreads_id(cls, isbn):
+        """
+        Use GoodReads search API
+        """
+        secrets = app_config.get_secrets()
+
+        goodreads_id = None
+        search_api_tpl = 'https://www.goodreads.com/search/index.xml'
+
+        params = {
+            'key': secrets['GOODREADS_API_KEY'],
+            'q': isbn.encode('utf-8')
+        }
+        query_string = urlencode(params)
+
+        search_api_url = '%s?%s' % (search_api_tpl, query_string)
+
+        # Get search api results.
+        r = requests.get(search_api_url, params=params)
+
+        if r.status_code == 200:
+            tree = ElementTree.fromstring(r.content)
+            best_book = tree.find('.//best_book')
+            if best_book is not None:
+                goodreads_id = best_book.find('id').text
+            else:
+                logger.warning('could not find a matching book for ISBN %s' % isbn)
+        else:
+            logger.warning('did not receive a 200 when using Goodreads search api')
+        return goodreads_id
+
+    def fetch_goodreads_id(self):
+        """Retrieve a book's Goodreads slug from the Goodreads Search API"""
+        self.goodreads_id = self.get_goodreads_id(self.isbn)
+        return self
+
 
 
 def get_books_csv():
@@ -773,7 +818,7 @@ def get_books_itunes_ids(input_filename=os.path.join('data', 'books.csv'),
                 output_book = {k: book[k] for k in fieldnames}
 
                 if book['title']:
-                    output_book['itunes_id'] = Book.process_itunes_reference(book['title'])
+                    output_book['itunes_id'] = Book.get_itunes_id(book['title'])
 
                 writer.writerow(output_book)
 
@@ -784,3 +829,38 @@ def get_books_itunes_ids(input_filename=os.path.join('data', 'books.csv'),
                 # I had previously tried a sleep time of 5 and many requests
                 # failed
                 time.sleep(10)
+
+@task
+def get_books_goodreads_ids(input_filename=os.path.join('data', 'books.csv'),
+        output_filename=os.path.join('data', 'goodreads_ids.csv')):
+    """
+    Retrieve GoodReads slugs corresponding to books in the books spreadsheet.
+
+    """
+    fieldnames = [
+        # Only include enough fields to identify the book
+        'title',
+        'isbn',
+        'goodreads_id'
+    ]
+
+    with open(input_filename) as readfile:
+        reader = CSVKitDictReader(readfile, encoding='utf-8')
+        reader.fieldnames = [name.strip().lower() for name in reader.fieldnames]
+
+        with open(output_filename, 'wb') as fout:
+            writer = CSVKitDictWriter(fout, fieldnames=fieldnames)
+            writer.writeheader()
+
+            for book in reader:
+
+                output_book = {'title': book['title'], 'isbn': book['isbn'], 'goodreads_id': ''}
+
+                if book['isbn']:
+                    output_book['goodreads_id'] = Book.get_goodreads_id(book['isbn'])
+
+                writer.writerow(output_book)
+
+                # According to the Goodreads API documenation (https://www.goodreads.com/api/terms)
+                # the rate limit is 1 request per second.
+                time.sleep(2)

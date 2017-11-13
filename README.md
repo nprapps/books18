@@ -16,6 +16,7 @@ Books Concierge (2017 version)
 * [COPY editing](#copy-editing)
 * [Load books and covers](#load-books-and-covers)
 * [Get iTunes IDs](#get-itunes-ids)
+* [Get Goodreads IDs](#get-goodreads-ids)
 * [Arbitrary Google Docs](#arbitrary-google-docs)
 * [Run Python tests](#run-python-tests)
 * [Run Javascript tests](#run-javascript-tests)
@@ -302,6 +303,16 @@ Example values: `998405272`
 This field will not be rendered if `hide_ibooks` is `TRUE`.
 
 It will only be used to generate the iTunes URL if the `USE_ITUNES_ID` is set to `True`.
+
+This value is populated by the visuals team.
+
+TODO: Explain how it is populated.
+
+#### goodreads\_id
+
+JSON/template property: goodreads\_id
+
+Example values: `31915219`
 
 This value is populated by the visuals team.
 
@@ -607,6 +618,33 @@ fab data.get_books_itunes_ids:input_filename=data/new_books.csv,output_filename=
 ```
 
 This might be useful if you wanted to only get IDs for a subset of books that were added to the spreadsheet after the last time you fetched IDs.
+
+Get Goodreads IDs
+--------------
+
+To generate links that allow users to access a book's Goodreads page, we need to get the Goodreads slug for each book. To get these slugs, you can run the Fabric task `data.get_books_goodreads_ids`, which will output a CSV from which you can copy and paste the slug into the `goodreads_id` column of the Books Google Spreadsheet.
+
+There are a couple of caveats when running this command.
+
+This command takes around 15-20 minutes to bypass the rate limiting of the Goodreads search API.  It's probably best to run it first thing in the morning or to let it run overnight.
+
+You'll want to make sure you update the book data before running this command.  Otherwise, the rows won't line up when you copy and paste into the Google Spreadsheet.  For the same reason, you will want to run the command when the book list is in a pretty stable state.
+
+To use the Goodreads API, you need a developer key. You should set this key as an environment variable like so: `books17_GOODREADS_API_KEY=YOUR_KEY_HERE` . If you need to replace this key, it's fairly simple to generate a new one from the [Goodreads API page](https://www.goodreads.com/api).
+
+Here's the task:
+
+```
+fab data.get_books_goodreads_ids
+```
+
+By default, the command will read the books from `data/books.csv` and output the resulting iTunes IDs to `data/goodreads_ids.csv`, but you can override either path:
+
+```
+fab data.get_books_goodreads_ids:input_filename=data/new_books.csv,output_filename=data/new_books_goodreads_ids.csv
+```
+
+This might be useful if you wanted to only get the Goodreads slugs for a subset of books that were added to the spreadsheet after the last time you fetched them.
 
 Arbitrary Google Docs
 ----------------------

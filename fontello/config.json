@@ -113,6 +113,12 @@
       "css": "basket",
       "code": 59449,
       "src": "fontawesome"
+    },
+    {
+      "uid": "f04a5d24e9e659145b966739c4fde82a",
+      "css": "bookmark",
+      "code": 59407,
+      "src": "fontawesome"
     }
   ]
 }
