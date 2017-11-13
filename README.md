@@ -626,11 +626,11 @@ To generate links that allow users to access a book's Goodreads page, we need to
 
 There are a couple of caveats when running this command.
 
-This command takes around 15-20 minutes to bypass the rate limiting of the iTunes search API.  It's probably best to run it first thing in the morning or to let it run overnight.
+This command takes around 15-20 minutes to bypass the rate limiting of the Goodreads search API.  It's probably best to run it first thing in the morning or to let it run overnight.
 
 You'll want to make sure you update the book data before running this command.  Otherwise, the rows won't line up when you copy and paste into the Google Spreadsheet.  For the same reason, you will want to run the command when the book list is in a pretty stable state.
 
-Since this command uses the Goodreads API, the same caveats as the iTunes ID generator apply. You do need a developer key to use the API, however. You should set this key as an environment variable like so: `books17_GOODREADS_API_KEY=YOUR_KEY_HERE` . If you need to replace this key, it's fairly simple to generate a new one from the [Goodreads API page](https://www.goodreads.com/api).
+To use the Goodreads API, you need a developer key. You should set this key as an environment variable like so: `books17_GOODREADS_API_KEY=YOUR_KEY_HERE` . If you need to replace this key, it's fairly simple to generate a new one from the [Goodreads API page](https://www.goodreads.com/api).
 
 Here's the task:
 
