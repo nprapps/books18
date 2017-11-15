@@ -831,6 +831,18 @@ def get_books_itunes_ids(input_filename=os.path.join('data', 'books.csv'),
                 time.sleep(10)
 
 @task
+def get_book_itunes_id(title):
+    """
+    Get iTunes ID for a single book title
+
+    This is useful for correcting a few IDs here or there.  This might happen,
+    for example, if someone decides to change what book they're picking after
+    the IDs have already been added.
+
+    """
+    print(Book.get_itunes_id(title))
+
+@task
 def get_books_goodreads_ids(input_filename=os.path.join('data', 'books.csv'),
         output_filename=os.path.join('data', 'goodreads_ids.csv')):
     """
@@ -864,3 +876,8 @@ def get_books_goodreads_ids(input_filename=os.path.join('data', 'books.csv'),
                 # According to the Goodreads API documenation (https://www.goodreads.com/api/terms)
                 # the rate limit is 1 request per second.
                 time.sleep(2)
+
+@task
+def get_book_goodreads_id(isbn):
+    """Get Goodreads ID for a single book ISBN"""
+    print(Book.get_goodreads_id(isbn))

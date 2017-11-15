@@ -619,6 +619,12 @@ fab data.get_books_itunes_ids:input_filename=data/new_books.csv,output_filename=
 
 This might be useful if you wanted to only get IDs for a subset of books that were added to the spreadsheet after the last time you fetched IDs.
 
+If you need to get an iTunes ID for a single book, you can use the `data.get_book_itunes_id` task.
+
+```
+fab data.get_book_itunes_id:"The Apparitionists"
+```
+
 Get Goodreads IDs
 --------------
 
@@ -645,6 +651,12 @@ fab data.get_books_goodreads_ids:input_filename=data/new_books.csv,output_filena
 ```
 
 This might be useful if you wanted to only get the Goodreads slugs for a subset of books that were added to the spreadsheet after the last time you fetched them.
+
+If you need to get a Goodreads ID for a single book, you can use the `data.get_book_goodreads_id` task.  Note that the argument to the task is the book's ISBN.
+
+```
+fab data.get_book_goodreads_id:0544745973
+```
 
 Arbitrary Google Docs
 ----------------------
