@@ -623,9 +623,10 @@ h1 + #story-meta { margin-top: -11px; }
 }
 
 // TODO move this to a logical place and add colors to variables
-@tag-start-color: @raw-sienna; // TODO change var name to primary color at top of less file
-@tag-mid-color: #f4d44d;
-@tag-end-color: #63c5b2;
+@tag-start-color: lighten(#9a2f56, 7%);
+@tag-mid-color: lighten(@raw-sienna, 7%);
+@tag-end-color: lighten(#e59e2c, 7%);
+
 @tag-count: 32;
 @tag-midpoint: @tag-count / 2;
 
