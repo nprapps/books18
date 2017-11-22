@@ -38,6 +38,7 @@ DEFAULT_EXTERNAL_LINKS_JSON = os.path.join('data',
 DEFAULT_ISBN_KEY = app_config.EXTERNAL_LINKS_COLUMNS['isbn']
 DEFAULT_STATION_KEY = app_config.EXTERNAL_LINKS_COLUMNS['station_name']
 DEFAULT_URL_KEY = app_config.EXTERNAL_LINKS_COLUMNS['url']
+DEFAULT_INCLUDE_KEY = app_config.EXTERNAL_LINKS_COLUMNS['add_to_concierge']
 
 
 def get_external_links_csv(output_path=DEFAULT_EXTERNAL_LINKS_CSV):
@@ -130,11 +131,22 @@ def get_link_html(url, station_name):
         )
 
 
+def parse_spreadsheet_boolean(val):
+    if val.lower() == 'true':
+        return True
+
+    if val.lower() == 'yes':
+        return True
+
+    return False
+
+
 def parse_external_links_csv(csv_path=DEFAULT_EXTERNAL_LINKS_CSV,
                              json_path=DEFAULT_EXTERNAL_LINKS_JSON,
                              isbn_key=DEFAULT_ISBN_KEY,
                              station_key=DEFAULT_STATION_KEY,
-                             url_key=DEFAULT_URL_KEY):
+                             url_key=DEFAULT_URL_KEY,
+                             include_key=DEFAULT_INCLUDE_KEY):
     """
     Convert external links CSV to a JSON lookup table.
 
@@ -150,6 +162,9 @@ def parse_external_links_csv(csv_path=DEFAULT_EXTERNAL_LINKS_CSV,
             contains the book's station.
         url_key (str): Column name in the CSV data for the column that
             contains the URL to the member station coverage.
+        include_key(str): Column name in the CSV data for the column that
+            contains the flag which indicates whether the link should
+            ultimately be merged into the book list.
 
     """
     external_links_by_isbn = {}
@@ -159,8 +174,7 @@ def parse_external_links_csv(csv_path=DEFAULT_EXTERNAL_LINKS_CSV,
 
         for row in reader:
             isbn = row[isbn_key]
-            # TODO: Ignore rows where flag is not set
-            if not isbn:
+            if not isbn or not parse_spreadsheet_boolean(row[include_key]):
                 continue
 
             url = row[url_key]

@@ -136,12 +136,15 @@ except ImportError:
 # coverage from member stations.
 EXTERNAL_LINKS_GOOGLE_DOC_KEY = "2PACX-1vSPsl2tLd7FwzPhZzc9DfiFM1ymQy9ZLD7AzMgh7WPRSn0qWt4QqDCntIFdcvxFGLzsxq1GsBUjmVak"
 # Normalized lookup of column names.
+# This is intended to avoid having to dive into the code if the column names
+# (which correspond to form questions) change from year to year.
 # You shouldn't have to change these if you just copy the Google Form from
 # last year.
 EXTERNAL_LINKS_COLUMNS = {
     'isbn': "10-Digit ISBN",
     'station_name': "Your station",
     'url': "Link to coverage",
+    'add_to_concierge': 'add_to_concierge',
 }
 
 # Allow override
