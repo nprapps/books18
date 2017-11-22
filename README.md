@@ -17,6 +17,7 @@ Books Concierge (2017 version)
 * [Load books and covers](#load-books-and-covers)
 * [Get iTunes IDs](#get-itunes-ids)
 * [Get Goodreads IDs](#get-goodreads-ids)
+* [Get Links to Member Station Coverage](#get-links-to-member-station-coverage)
 * [Arbitrary Google Docs](#arbitrary-google-docs)
 * [Run Python tests](#run-python-tests)
 * [Run Javascript tests](#run-javascript-tests)
@@ -626,7 +627,9 @@ fab data.get_book_itunes_id:"The Apparitionists"
 ```
 
 Get Goodreads IDs
---------------
+-----------------
+
+*NEW FOR 2017*
 
 To generate links that allow users to access a book's Goodreads page, we need to get the Goodreads slug for each book. To get these slugs, you can run the Fabric task `data.get_books_goodreads_ids`, which will output a CSV from which you can copy and paste the slug into the `goodreads_id` column of the Books Google Spreadsheet.
 
@@ -657,6 +660,34 @@ If you need to get a Goodreads ID for a single book, you can use the `data.get_b
 ```
 fab data.get_book_goodreads_id:0544745973
 ```
+
+Get Links to Member Station Coverage
+------------------------------------
+
+*NEW FOR 2017*
+
+The Books team tries to surface member station coverage of books. This content is pulled from a comma-separated list of HTML links (i.e. `<a>` tags) in the `EXTERNAL LINKS HTML`.
+
+In 2017, the Books time decided to send a [Google Form](https://docs.google.com/forms/d/11VfB7WeBIg1YQKNzfVzbU5rae53PJ02d4Xm4e9yIajA/edit) to member stations soliciting their book coverage.  They asked for ISBNs to make it easier to programatically merge the station content with the books spreadsheet.
+
+After the submissions close, you should add an `add_to_concierge` column to the spreadsheet and set the value of the cell to `TRUE` for any links that you want to include in the concierge.
+
+You'll also need to publish the spreadsheet to the web as CSV.
+
+Then, you can run:
+
+```
+fab data.update
+fab data.load_external_links
+```
+
+This Fabric task does a few things.  First, it downloads the form responses spreadsheet as CSV to `data/external_links.csv`. It then parses the CSV, fetches the station coverage titles from the web, builds a lookup table and stores that as JSON in `data/external_links_by_isbn.json`.  Finally, it merges the books in the book list with the external links and outputs a CSV file in `data/external_links_to_merge.csv`.
+
+Since we get the page titles by requesting and parsing the HTML, this command can take a few minutes to run.
+
+The values in `data/external_links_to_merge.csv` can be copied and pasted into the books Google Spreadsheet.  Because the order of rows in the CSV file follows the books spreadsheet, it makes sense to run this command after the book list is very stable.  Also, be sure that the local CSV of the book list is up-to-date by running `fab data.update`.
+
+As we're pulling titles of the coverage from the pages' `<title>` tag, you'll probably want to edit the link text after you copy the links into the books spreadsheet.
 
 Arbitrary Google Docs
 ----------------------

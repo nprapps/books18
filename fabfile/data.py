@@ -9,6 +9,10 @@ import codecs
 import copytext
 import csv
 import errno
+from external_links import (
+    get_external_links_csv,
+    parse_external_links_csv,
+    merge_external_links)
 import json
 import locale
 import os
@@ -881,3 +885,11 @@ def get_books_goodreads_ids(input_filename=os.path.join('data', 'books.csv'),
 def get_book_goodreads_id(isbn):
     """Get Goodreads ID for a single book ISBN"""
     print(Book.get_goodreads_id(isbn))
+
+
+@task
+def load_external_links():
+    """Get links to member station book coverage"""
+    get_external_links_csv()
+    parse_external_links_csv()
+    merge_external_links()

@@ -132,6 +132,25 @@ try:
 except ImportError:
     pass
 
+# Google Spreadsheet corresponding to a Google Form used to solicit links to
+# coverage from member stations.
+EXTERNAL_LINKS_GOOGLE_DOC_KEY = "2PACX-1vSPsl2tLd7FwzPhZzc9DfiFM1ymQy9ZLD7AzMgh7WPRSn0qWt4QqDCntIFdcvxFGLzsxq1GsBUjmVak"
+# Normalized lookup of column names.
+# You shouldn't have to change these if you just copy the Google Form from
+# last year.
+EXTERNAL_LINKS_COLUMNS = {
+    'isbn': "10-Digit ISBN",
+    'station_name': "Your station",
+    'url': "Link to coverage",
+}
+
+# Allow override
+try:
+    from local_settings import EXTERNAL_LINKS_GOOGLE_DOC_KEY
+except ImportError:
+    pass
+
+
 """
 SHARING
 """
