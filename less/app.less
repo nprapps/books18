@@ -50,11 +50,11 @@ nav, .col-md-12, header, footer {
 
 // General styles
 a, a:link, a:visited {
-    color: @pine-links;
+    color: @raw-sienna-links;
     text-decoration: none;
 }
 a:hover {
-    color: lighten(@pine, 20%);
+    color: lighten(@raw-sienna, 20%);
     text-decoration: none;
 }
 
@@ -102,11 +102,11 @@ header {
     // padding: 30px @grid-gutter-width / 2;
     // background: #f5f5f5;
     //background: @header;
-    background: @pine url('../assets/books-header.png');
+    background: @raw-sienna url('../assets/books-header.png');
     width: 100%;
     padding-top: 5px;
     padding-bottom: 40px;
-    border-bottom: 3px solid @pine-dark;
+    border-bottom: 3px solid @raw-sienna-dark;
     @media screen and (max-width: @screen-sm) {
         padding-bottom: 30px;
     }
@@ -162,13 +162,13 @@ header {
     .share{
         border:none;
         font-size: 13px;
-        color: @pine;
+        color: @raw-sienna;
         background-color: @light-gray;
         margin:0;
         margin-top: 20px;
 
         &:hover{
-            color: @pine-dark;
+            color: @raw-sienna-dark;
             background-color: @dark-gray;
         }
 
@@ -236,7 +236,7 @@ header {
 
         &.left { float: left; }
         &.right { float: right; }
-        a { color: @pine; }
+        a { color: @raw-sienna; }
     }
 }
 
@@ -281,7 +281,7 @@ h1 + #story-meta { margin-top: -11px; }
     .btn.btn-default {
         margin: 0;
         background-color: @light-gray;
-        color: @pine;
+        color: @raw-sienna;
         font-size: 14px;
         border-radius: 0px;
         @media screen and (min-width: 480px) {
@@ -295,9 +295,9 @@ h1 + #story-meta { margin-top: -11px; }
 
     &.grid-active .btn.btn-default.grid,
     &.list-active .btn.btn-default.list {
-        background: @pine;
+        background: @raw-sienna;
         color: #fff;
-        border-color: @pine;
+        border-color: @raw-sienna;
         border-radius: 0px;
     }
 }
@@ -358,7 +358,7 @@ h1 + #story-meta { margin-top: -11px; }
             right: 0;
             margin: 0 5px;
             background-color: @light-gray;
-            border:3px solid @pine;
+            border:3px solid @raw-sienna;
             box-sizing:border-box;
             color: black;
             -webkit-transition: all 0.5s ease;
@@ -380,7 +380,7 @@ h1 + #story-meta { margin-top: -11px; }
             .reviewer {
                 display: block;
                 padding: 10px;
-                color: @pine;
+                color: @raw-sienna;
                 font-size: 14px;
                 line-height: 18px;
                 text-align: right;
@@ -436,7 +436,7 @@ h1 + #story-meta { margin-top: -11px; }
           right: 0;
           margin: 0 5px;
           background-color: @light-gray;
-          border:3px solid @pine;
+          border:3px solid @raw-sienna;
           box-sizing:border-box;
           color: black;
           -webkit-transition: all 0.5s ease;
@@ -461,7 +461,7 @@ h1 + #story-meta { margin-top: -11px; }
           .reviewer {
               display: block;
               padding: 10px;
-              color: @pine;
+              color: @raw-sienna;
               font-size: 14px;
               line-height: 18px;
               text-align: right;
@@ -521,7 +521,7 @@ h1 + #story-meta { margin-top: -11px; }
     bottom: 100px;
     left: 0px;
     width: 200px + @grid-gutter-width / 2;
-    background-color: @pine;
+    background-color: @raw-sienna;
     background-position: right;
     background-repeat: no-repeat;
     text-align: right;
@@ -613,206 +613,223 @@ h1 + #story-meta { margin-top: -11px; }
         font-size: 15px;
         margin-top:10px;
         a{
-            color:@pine-links;
+            color:@raw-sienna-links;
         }
 
         a:hover {
-        color: lighten(@pine, 20%);
+        color: lighten(@raw-sienna, 20%);
         }
     }
 }
 
-.tag-color(@color){
-    border: lighten(desaturate(@color, 20%),5%);
-    background-color: lighten(desaturate(@color, 20%),5%);
+// TODO move this to a logical place and add colors to variables
+@tag-start-color: lighten(#9a2f56, 7%);
+@tag-mid-color: lighten(@raw-sienna, 7%);
+@tag-end-color: lighten(#e59e2c, 7%);
+
+@tag-count: 32;
+@tag-midpoint: @tag-count / 2;
+
+// TODO better comment this mixin
+.tag-color(@i) when (@i < @tag-midpoint) {
+    @tag-color: mix(@tag-mid-color, @tag-start-color, percentage(@i/@tag-midpoint));
+    border: @tag-color;
+    background: @tag-color;
     color: white;
 }
-@tags: @pine;
+
+.tag-color(@i) when (@i >= @tag-midpoint) {
+    @tag-color: mix(@tag-end-color, @tag-mid-color, percentage(mod(@i, @tag-midpoint)/@tag-midpoint));
+    border: @tag-color;
+    background: @tag-color;
+    color: white;
+}
+@tags: @raw-sienna;
 
 .staff-picks.tag,
 .staff-picks.tag:active,
 .staff-picks.tag:focus{
-        .tag-color(spin(@tags, 0 * @gradient-step));
+        .tag-color(0);
 }
 
 .biography-and-memoir.tag,
 .biography-and-memoir.tag:active,
 .biography-and-memoir.tag:focus{
-        .tag-color(spin(@tags, 1 * @gradient-step));
+        .tag-color(1);
 }
 
 .book-club-ideas.tag,
 .book-club-ideas.tag:active,
 .book-club-ideas.tag:focus{
-        .tag-color(spin(@tags, 2 * @gradient-step));
+        .tag-color(2);
 }
 
 .comics-and-graphic-novels.tag,
 .comics-and-graphic-novels.tag:active,
 .comics-and-graphic-novels.tag:focus{
-        .tag-color(spin(@tags, 3 * @gradient-step));
+        .tag-color(3);
 }
 
 .cookbooks-and-food.tag,
 .cookbooks-and-food.tag:active,
 .cookbooks-and-food.tag:focus{
-        .tag-color(spin(@tags, 4 * @gradient-step));
+        .tag-color(4);
 }
 
 .eye-opening-reads.tag,
 .eye-opening-reads.tag:active,
 .eye-opening-reads.tag:focus{
-        .tag-color(spin(@tags, 5 * @gradient-step));
+        .tag-color(5);
 }
 
 .family-matters.tag,
 .family-matters.tag:active,
 .family-matters.tag:focus{
-        .tag-color(spin(@tags, 6 * @gradient-step));
+        .tag-color(6);
 }
 
 .for-art-lovers.tag,
 .for-art-lovers.tag:active,
 .for-art-lovers.tag:focus{
-        .tag-color(spin(@tags, 7 * @gradient-step));
+        .tag-color(7);
 }
 
 .for-history-lovers.tag,
 .for-history-lovers.tag:active,
 .for-history-lovers.tag:focus{
-        .tag-color(spin(@tags, 8 * @gradient-step));
+        .tag-color(8);
 }
 
 .for-music-lovers.tag,
 .for-music-lovers.tag:active,
 .for-music-lovers.tag:focus{
-        .tag-color(spin(@tags, 9 * @gradient-step));
+        .tag-color(9);
 }
 
 .funny-stuff.tag,
 .funny-stuff.tag:active,
 .funny-stuff.tag:focus{
-        .tag-color(spin(@tags, 10 * @gradient-step));
+        .tag-color(10);
 }
 
 .historical-fiction.tag,
 .historical-fiction.tag:active,
 .historical-fiction.tag:focus{
-        .tag-color(spin(@tags, 11 * @gradient-step));
+        .tag-color(11);
 }
 
 .identity-and-culture.tag,
 .identity-and-culture.tag:active,
 .identity-and-culture.tag:focus{
-        .tag-color(spin(@tags, 12 * @gradient-step));
+        .tag-color(12);
 }
 
 .its-all-geek-to-me.tag,
 .its-all-geek-to-me.tag:active,
 .its-all-geek-to-me.tag:focus{
-        .tag-color(spin(@tags, 13 * @gradient-step));
+        .tag-color(13);
 }
 
 .kids-books.tag,
 .kids-books.tag:active,
 .kids-books.tag:focus{
-        .tag-color(spin(@tags, 14 * @gradient-step));
+        .tag-color(14);
 }
 
 .ladies-first.tag,
 .ladies-first.tag:active,
 .ladies-first.tag:focus{
-        .tag-color(spin(@tags, 15 * @gradient-step));
+        .tag-color(15);
 }
 
 .lets-talk-about-sex.tag,
 .lets-talk-about-sex.tag:active,
 .lets-talk-about-sex.tag:focus{
-        .tag-color(spin(@tags, 16 * @gradient-step));
+        .tag-color(16);
 }
 
 .love-stories.tag,
 .love-stories.tag:active,
 .love-stories.tag:focus{
-        .tag-color(spin(@tags, 17 * @gradient-step));
+        .tag-color(17);
 }
 
 .mysteries-and-thrillers.tag,
 .mysteries-and-thrillers.tag:active,
 .mysteries-and-thrillers.tag:focus{
-        .tag-color(spin(@tags, 18 * @gradient-step));
+        .tag-color(18);
 }
 
 .nonfiction.tag,
 .nonfiction.tag:active,
 .nonfiction.tag:focus{
-        .tag-color(spin(@tags, 19 * @gradient-step));
+        .tag-color(19);
 }
 
 .poetry.tag,
 .poetry.tag:active,
 .poetry.tag:focus{
-        .tag-color(spin(@tags, 20 * @gradient-step));
+        .tag-color(20);
 }
 
 .rather-long.tag,
 .rather-long.tag:active,
 .rather-long.tag:focus{
-        .tag-color(spin(@tags, 21 * @gradient-step));
+        .tag-color(21);
 }
 
 .rather-short.tag,
 .rather-short.tag:active,
 .rather-short.tag:focus{
-        .tag-color(spin(@tags, 22 * @gradient-step));
+        .tag-color(22);
 }
 
 .realistic-fiction.tag,
 .realistic-fiction.tag:active,
 .realistic-fiction.tag:focus{
-        .tag-color(spin(@tags, 23 * @gradient-step));
+        .tag-color(23);
 }
 
 .science.tag,
 .science.tag:active,
 .science.tag:focus{
-        .tag-color(spin(@tags, 24 * @gradient-step));
+        .tag-color(24);
 }
 
 .science-and-society.tag,
 .science-and-society.tag:active,
 .science-and-society.tag:focus{
-        .tag-color(spin(@tags, 25 * @gradient-step));
+        .tag-color(25);
 }
 
 .science-fiction-and-fantasy.tag,
 .science-fiction-and-fantasy.tag:active,
 .science-fiction-and-fantasy.tag:focus{
-        .tag-color(spin(@tags, 26 * @gradient-step));
+        .tag-color(26);
 }
 
 .seriously-great-writing.tag,
 .seriously-great-writing.tag:active,
 .seriously-great-writing.tag:focus{
-        .tag-color(spin(@tags, 27 * @gradient-step));
+        .tag-color(27);
 }
 
 .tales-from-around-the-world.tag,
 .tales-from-around-the-world.tag:active,
 .tales-from-around-the-world.tag:focus{
-        .tag-color(spin(@tags, 28 * @gradient-step));
+        .tag-color(28);
 }
 
 .the-dark-side.tag,
 .the-dark-side.tag:active,
 .the-dark-side.tag:focus{
-        .tag-color(spin(@tags, 29 * @gradient-step));
+        .tag-color(29);
 }
 
 .young-adult.tag,
 .young-adult.tag:active,
 .young-adult.tag:focus{
-        .tag-color(spin(@tags, 30 * @gradient-step));
+        .tag-color(30);
 }
 
 .tags-wrapper .tag{
@@ -836,12 +853,12 @@ h1 + #story-meta { margin-top: -11px; }
     // font-size: 12px;
 
     // &:hover {
-    //  color: @pine;
-    //  background-color: lighten(@pine, 45%);
+    //  color: @raw-sienna;
+    //  background-color: lighten(@raw-sienna, 45%);
 
     //  @media screen and (min-width: @screen-sm){
     //      color: #fff;
-    //      background-color: @pine;
+    //      background-color: @raw-sienna;
     //  }
     // }
 
@@ -856,8 +873,8 @@ h1 + #story-meta { margin-top: -11px; }
         box-shadow: none;
         border-radius: none;
         outline: none;
-        color: @pine;
-        background-color: lighten(@pine, 45%);
+        color: @raw-sienna;
+        background-color: lighten(@raw-sienna, 45%);
         &:hover{
             text-decoration:underline;
         }
@@ -866,7 +883,7 @@ h1 + #story-meta { margin-top: -11px; }
     &.selected,
     &.selected:active,
     &.selected:focus {
-        background: @pine;
+        background: @raw-sienna;
         color: white;
         position: relative;
         padding: 8px 25px 8px 15px;
@@ -898,8 +915,8 @@ h1 + #story-meta { margin-top: -11px; }
         &.selected:focus {
             &:before {
                 display: none;
-                background: lighten(@pine, 30%);
-                color: @pine;
+                background: lighten(@raw-sienna, 30%);
+                color: @raw-sienna;
             }
         }
     }
@@ -953,7 +970,7 @@ h1 + #story-meta { margin-top: -11px; }
     border: none;
     width: 100%;
     background-color: transparent;
-    color: @pine;
+    color: @raw-sienna;
     margin: 0;
     padding: 5px 5px 5px 15px;
     text-align: left;
@@ -990,7 +1007,7 @@ h1 + #story-meta { margin-top: -11px; }
 
     &:hover, &.selected, &:active, &:focus {
         background-color: transparent;
-        color: @pine;
+        color: @raw-sienna;
         text-decoration: underline;
         box-shadow: none;
         border-radius: none;
@@ -1092,7 +1109,7 @@ h1 + #story-meta { margin-top: -11px; }
 }
 
 #close-mobile-filter{
-    background: @pine;
+    background: @raw-sienna;
     color: #fff;
     padding: 10px 5px 10px 5px;
     margin: 25px 0 0 0;
@@ -1104,7 +1121,7 @@ h1 + #story-meta { margin-top: -11px; }
     width: 100%;
 
     &:hover {
-        background: darken(@pine, 20%);
+        background: darken(@raw-sienna, 20%);
     }
 }
 
@@ -1121,7 +1138,7 @@ h1 + #story-meta { margin-top: -11px; }
 }
 
 .modal-backdrop{
-    background-color: darken(@pine, 30%);
+    background-color: darken(@raw-sienna, 30%);
 }
 .modal-body-wrapper{
   display:table;
@@ -1280,7 +1297,7 @@ h1 + #story-meta { margin-top: -11px; }
         width:35px;
         line-height:33px;
         display:inline-block;
-        //border:1px solid @pine;
+        //border:1px solid @raw-sienna;
         text-align: center;
         border-radius: 50%;
         vertical-align:bottom;
@@ -1291,7 +1308,7 @@ h1 + #story-meta { margin-top: -11px; }
         }
 
         &:hover{
-            background-color: @pine;
+            background-color: @raw-sienna;
             .icon{
                 color:white;
             }
@@ -1300,7 +1317,7 @@ h1 + #story-meta { margin-top: -11px; }
         .icon{
             // display:inline-block;
             font-size: 15px;
-            color:@pine;
+            color:@raw-sienna;
             @media (max-width: 767px) {
                 font-size:22px;
             }
@@ -1323,7 +1340,7 @@ h1 + #story-meta { margin-top: -11px; }
 
 .modal-nav-buttons {
     margin: 0;
-    color: @pine;
+    color: @raw-sienna;
     font-size:10px;
     height:45px;
     line-height: 27px;
@@ -1334,13 +1351,13 @@ h1 + #story-meta { margin-top: -11px; }
 
     &:hover{
       background-color: @dark-gray;
-      color: @pine;
+      color: @raw-sienna;
     }
 }
 
 
 #modal-close-btn {
-    color: @pine;
+    color: @raw-sienna;
     border: none;
     float:right;
     margin-top:0;
@@ -1361,7 +1378,7 @@ h1 + #story-meta { margin-top: -11px; }
 
     &:hover {
     background-color: transparent;
-    color: lighten(@pine, 20%);
+    color: lighten(@raw-sienna, 20%);
     }
 
     &:focus{
@@ -1383,12 +1400,12 @@ h1 + #story-meta { margin-top: -11px; }
 
 //Styling for tags and links inside modal
 .book-modal-links {
-    color: @pine;
+    color: @raw-sienna;
     font-size: 14px;
 
     .purchase-link {
         font-size: 11px;
-        color: @pine;
+        color: @raw-sienna;
         background-color: @light-gray;
         padding: 8px;
         text-align: right;
@@ -1399,12 +1416,12 @@ h1 + #story-meta { margin-top: -11px; }
 
         &:hover,
         &:focus{
-          color: @pine;
+          color: @raw-sienna;
           background-color: @dark-gray;
         }
 
         i{
-            color:@pine;
+            color:@raw-sienna;
             padding-right:4px;
         }
     }
@@ -1417,7 +1434,7 @@ h1 + #story-meta { margin-top: -11px; }
     }
 
     >a:hover {
-        color: lighten(@pine, 20%);
+        color: lighten(@raw-sienna, 20%);
     }
 }
 
@@ -1528,7 +1545,7 @@ footer {
     #mobile-filters {
 
         margin: 20px 0 0 0;
-        background-color:@pine;
+        background-color: @raw-sienna;
         color:white;
         border: none;
         line-height:1.33;
@@ -1597,7 +1614,7 @@ footer {
                     padding-left: 5px;
 
                     // &:active {
-                    //  background: darken(@pine, 20%);
+                    //  background: darken(@raw-sienna, 20%);
                     // }
                 }
 
@@ -1756,10 +1773,10 @@ footer {
     // nav .site-links { margin-left: 50px; }
     footer {
         .primary { display: none; }
-        .secondary p { float: left; font-size: 9px; color: @pine-fade; }
+        .secondary p { float: left; font-size: 9px; color: @raw-sienna-fade; }
         .secondary ul { float: right; }
         .secondary li { font-size: 9px; text-transform: none; }
-        .secondary a { color: @pine-fade; }
+        .secondary a { color: @raw-sienna-fade; }
     }
 
     .modal-book-cover {
@@ -1821,7 +1838,7 @@ footer {
 
 /**** Misc overrides ****/
 .share-story a {
-    color: @pine;
+    color: @raw-sienna;
 }
 p.browse {
     text-align: center;
@@ -1862,7 +1879,7 @@ p.browse {
 //PROMO PAGE
 
 .promoContainer{
-  background: @pine url('../assets/books-header.png');
+  background: @raw-sienna url('../assets/books-header.png');
   padding: 50px;
   height: 90vh;
 
@@ -1903,7 +1920,7 @@ p.browse {
 
         &.btn-default:hover,
         &.btn-default:focus{
-          color: @pine;
+          color: @raw-sienna;
           background: @dark-gray;
         }
       }

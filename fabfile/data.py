@@ -8,6 +8,11 @@ import app_config
 import codecs
 import copytext
 import csv
+import errno
+from external_links import (
+    get_external_links_csv,
+    parse_external_links_csv,
+    merge_external_links)
 import json
 import locale
 import os
@@ -31,6 +36,7 @@ from fabric.api import task
 from facebook import GraphAPI
 from twitter import Twitter, OAuth
 from csvkit.py2 import CSVKitDictReader, CSVKitDictWriter
+from xml.etree import ElementTree
 
 logging.basicConfig(format=app_config.LOG_FORMAT)
 logger = logging.getLogger(__name__)
@@ -252,6 +258,7 @@ class Book(object):
     tags = None
     book_seamus_id = None
     itunes_id = None
+    goodreads_slug = None
     author_seamus_id = None
     author_seamus_headline = None
 
@@ -306,6 +313,10 @@ class Book(object):
         # ISBN redirection is broken use search API to retrieve itunes_id
         # added the column to the spreadsheet so ignore if it is already calculated
         self.itunes_id = kwargs['itunes_id']
+
+        if kwargs['goodreads_id'] != "":
+            self.goodreads_id = kwargs['goodreads_id']
+
         if (kwargs['book_seamus_id']):
             # Only search for links if there's a seamus ID
             self.links = self._process_links(kwargs['book_seamus_id'])
@@ -313,6 +324,7 @@ class Book(object):
             self.links = []
         self.external_links = self._process_external_links(kwargs['external links html'])
         self.tags = self._process_tags(kwargs['tags'])
+
 
     def _process_text(self, value):
         """
@@ -436,11 +448,11 @@ class Book(object):
         slug = slug[:254]
         return slug
 
-    def _process_itunes_reference(self, title):
+    @classmethod
+    def get_itunes_id(cls, title):
         """
         Use itunes search API
         """
-        time.sleep(1)
         itunes_id = None
         search_api_tpl = 'https://itunes.apple.com/search'
         main_title = title.split(':')[0]
@@ -477,6 +489,47 @@ class Book(object):
             logger.warning('did not receive a 200 when using itunes search api')
         return itunes_id
 
+    def fetch_itunes_id(self):
+        """Retrieve a book's iTunes ID from the iTunes Search API"""
+        self.itunes_id = self.get_itunes_id(self.title)
+        return self
+
+    @classmethod
+    def get_goodreads_id(cls, isbn):
+        """
+        Use GoodReads search API
+        """
+        secrets = app_config.get_secrets()
+
+        goodreads_id = None
+        search_api_tpl = 'https://www.goodreads.com/search/index.xml'
+
+        params = {
+            'key': secrets['GOODREADS_API_KEY'],
+            'q': isbn.encode('utf-8')
+        }
+        query_string = urlencode(params)
+
+        search_api_url = '%s?%s' % (search_api_tpl, query_string)
+
+        # Get search api results.
+        r = requests.get(search_api_url, params=params)
+
+        if r.status_code == 200:
+            tree = ElementTree.fromstring(r.content)
+            best_book = tree.find('.//best_book')
+            if best_book is not None:
+                goodreads_id = best_book.find('id').text
+            else:
+                logger.warning('could not find a matching book for ISBN %s' % isbn)
+        else:
+            logger.warning('did not receive a 200 when using Goodreads search api')
+        return goodreads_id
+
+    def fetch_goodreads_id(self):
+        """Retrieve a book's Goodreads slug from the Goodreads Search API"""
+        self.goodreads_id = self.get_goodreads_id(self.isbn)
+        return self
 
 
 
@@ -565,6 +618,16 @@ def parse_books_csv():
         book_list.append(b.__dict__)
 
     # Dump the list to JSON.
+
+    # The destination directory, `www/static-data` might not exist if you're
+    # bootstrapping the project for the first time, so make sure it does before
+    # trying to write the JSON.
+    try:
+        os.makedirs('www/static-data')
+    except OSError as e:
+        if e.errno != errno.EEXIST:
+            raise
+
     with open('www/static-data/books.json', 'wb') as writefile:
         writefile.write(json.dumps(book_list))
 
@@ -682,7 +745,6 @@ def make_promotion_thumb():
     images_per_column = TOTAL_IMAGES / IMAGE_COLUMNS
     image_width = PROMOTION_IMAGE_WIDTH / IMAGE_COLUMNS
     max_height = int(image_width * images_per_column * 1.5)
-    thumb_size = [image_width, image_width]
     image = Image.new('RGB', [PROMOTION_IMAGE_WIDTH, max_height])
 
     # Open the books JSON.
@@ -716,6 +778,12 @@ def make_promotion_thumb():
         last_y = new_height
         total_height += new_height
 
+    if min_height is None:
+        logger.warn("Minimum height not detected.  This is likely because "
+                    "no images were loaded. Skipping generation of promotion "
+                    "thumbnail image.")
+        return
+
     min_prop_width = min_height * 16 / float(9)
     # Make the proportion fit the highest full thumbnail width
     # that complies with the proportion
@@ -723,3 +791,105 @@ def make_promotion_thumb():
     cropped = image.crop((0, 0, final_width, min_height))
     # via http://stackoverflow.com/questions/1405602/how-to-adjust-the-quality-of-a-resized-image-in-python-imaging-library
     cropped.save('www/assets/img/covers.jpg', quality=95)
+
+@task
+def get_books_itunes_ids(input_filename=os.path.join('data', 'books.csv'),
+        output_filename=os.path.join('data', 'itunes_ids.csv')):
+    """
+    Retrieve iTunes IDs corresponding to books in the books spreadsheet.
+
+    """
+    fieldnames = [
+        # Only include enough fields to identify the book
+        'title',
+        'isbn',
+        'itunes_id',
+    ]
+
+    with open(input_filename) as readfile:
+        reader = CSVKitDictReader(readfile, encoding='utf-8')
+        reader.fieldnames = [name.strip().lower() for name in reader.fieldnames]
+
+        with open(output_filename, 'wb') as fout:
+            writer = CSVKitDictWriter(fout, fieldnames=fieldnames)
+            writer.writeheader()
+
+            for book in reader:
+                # Note that we don't create Book objects because the
+                # parsing/lookup takes too long and we only need to lookup the
+                # iTunes ID.
+
+                output_book = {k: book[k] for k in fieldnames}
+
+                if book['title']:
+                    output_book['itunes_id'] = Book.get_itunes_id(book['title'])
+
+                writer.writerow(output_book)
+
+                # We have to wait to avoid API throttling.  According to
+                # the Enterprise Partner Feed documentation, the limit is ~20
+                # calls per minute.  See
+                # https://affiliate.itunes.apple.com/resources/documentation/itunes-enterprise-partner-feed/
+                # I had previously tried a sleep time of 5 and many requests
+                # failed
+                time.sleep(10)
+
+@task
+def get_book_itunes_id(title):
+    """
+    Get iTunes ID for a single book title
+
+    This is useful for correcting a few IDs here or there.  This might happen,
+    for example, if someone decides to change what book they're picking after
+    the IDs have already been added.
+
+    """
+    print(Book.get_itunes_id(title))
+
+@task
+def get_books_goodreads_ids(input_filename=os.path.join('data', 'books.csv'),
+        output_filename=os.path.join('data', 'goodreads_ids.csv')):
+    """
+    Retrieve GoodReads slugs corresponding to books in the books spreadsheet.
+
+    """
+    fieldnames = [
+        # Only include enough fields to identify the book
+        'title',
+        'isbn',
+        'goodreads_id'
+    ]
+
+    with open(input_filename) as readfile:
+        reader = CSVKitDictReader(readfile, encoding='utf-8')
+        reader.fieldnames = [name.strip().lower() for name in reader.fieldnames]
+
+        with open(output_filename, 'wb') as fout:
+            writer = CSVKitDictWriter(fout, fieldnames=fieldnames)
+            writer.writeheader()
+
+            for book in reader:
+
+                output_book = {'title': book['title'], 'isbn': book['isbn'], 'goodreads_id': ''}
+
+                if book['isbn']:
+                    output_book['goodreads_id'] = Book.get_goodreads_id(book['isbn'])
+
+                writer.writerow(output_book)
+
+                # According to the Goodreads API documenation (https://www.goodreads.com/api/terms)
+                # the rate limit is 1 request per second.
+                time.sleep(2)
+
+@task
+def get_book_goodreads_id(isbn):
+    """Get Goodreads ID for a single book ISBN"""
+    print(Book.get_goodreads_id(isbn))
+
+
+@task
+def load_external_links():
+    """Get links to member station book coverage"""
+    get_external_links_csv()
+    parse_external_links_csv()
+    merge_external_links()

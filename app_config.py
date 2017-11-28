@@ -101,8 +101,10 @@ COPY EDITING
 COPY_GOOGLE_DOC_KEY = '1zQMjIfIwqD-INhQDj_Dr06YlTRw5A6KJ5Z9nxBA6qtQ'
 COPY_PATH = 'data/copy.xlsx'
 
-
-DATA_GOOGLE_DOC_KEY = '1jY6-rGfpzaPDsdEWibBzkzRpumYSLYQN71ETunU0kpo'
+# Key for Google Spreadsheet that contains book entries
+# This is the key for a production version.  Want to use a testing version?
+# Consider defining it in a `local_settings` module.
+DATA_GOOGLE_DOC_KEY = '1l2L3WW_q7zE1t0hpgKVao5Psw7BE2bK_UL8fio-OG08'
 
 # Override
 try:
@@ -129,6 +131,28 @@ try:
     from local_settings import USE_ITUNES_ID
 except ImportError:
     pass
+
+# Google Spreadsheet corresponding to a Google Form used to solicit links to
+# coverage from member stations.
+EXTERNAL_LINKS_GOOGLE_DOC_KEY = "2PACX-1vSPsl2tLd7FwzPhZzc9DfiFM1ymQy9ZLD7AzMgh7WPRSn0qWt4QqDCntIFdcvxFGLzsxq1GsBUjmVak"
+# Normalized lookup of column names.
+# This is intended to avoid having to dive into the code if the column names
+# (which correspond to form questions) change from year to year.
+# You shouldn't have to change these if you just copy the Google Form from
+# last year.
+EXTERNAL_LINKS_COLUMNS = {
+    'isbn': "10-Digit ISBN",
+    'station_name': "Your Station",
+    'url': "Link to coverage",
+    'add_to_concierge': 'add_to_concierge',
+}
+
+# Allow override
+try:
+    from local_settings import EXTERNAL_LINKS_GOOGLE_DOC_KEY
+except ImportError:
+    pass
+
 
 """
 SHARING

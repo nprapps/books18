@@ -4,6 +4,9 @@ Books Concierge (2017 version)
 * [What is this?](#what-is-this)
 * [Assumptions](#assumptions)
 * [What's in here?](#whats-in-here)
+* [Project Lifcycle](#project-lifecycle)
+* [Data Flow](#data-flow)
+* [Books Spreadsheet Fields](#books-spreadsheet-fields)
 * [Bootstrap the project](#bootstrap-the-project)
 * [Hide project secrets](#hide-project-secrets)
 * [Save media assets](#save-media-assets)
@@ -12,6 +15,9 @@ Books Concierge (2017 version)
 * [COPY configuration](#copy-configuration)
 * [COPY editing](#copy-editing)
 * [Load books and covers](#load-books-and-covers)
+* [Get iTunes IDs](#get-itunes-ids)
+* [Get Goodreads IDs](#get-goodreads-ids)
+* [Get Links to Member Station Coverage](#get-links-to-member-station-coverage)
 * [Arbitrary Google Docs](#arbitrary-google-docs)
 * [Run Python tests](#run-python-tests)
 * [Run Javascript tests](#run-javascript-tests)
@@ -65,6 +71,319 @@ The project contains the following folders and important files:
 * ``requirements.txt`` -- Python requirements.
 * ``static.py`` -- Static Flask views used in both ``app.py`` and ``public_app.py``.
 
+Project lifecycle
+-----------------
+
+Since this is an annual project and a collaboration between multiple teams, it's useful to know the start-to-finish process so everyone's aware of the dependencies between teams.
+
+This is based on the timeline laid out in a conversation between Nicole Cohen and Geoff Hing in September 2017.
+
+### Copy project code
+
+TODO: Define when this happens.
+
+The Visuals Team makes a copy of the project code and pushes it to a new repostory on GitHub.
+
+* Copy project code?  TODO: Define whether this means copying files or forking the repo or something else.
+* Push copy to a new GitHub repository.
+* Create a new version of the copy spreadsheet.
+* Create a testing version of the books spreadsheet that includes ISBN values for book records.
+
+### January - Create a new version of the books spreadsheet
+
+The Arts Desk creates a new version of the books spreadsheet by copying the previous years.  This happens early on in the project because staff wants to add books right away.
+
+### Late September - Share books spreadsheet with visuals team
+
+The arts desk shares the books spreadsheet with the visuals team.  They update the `app_config` module to reflect that sheet's document ID.
+
+### Early October - Reach out to staff and critics
+
+By early October, the Arts Desk will have reached out to staff and critics to write reviews. Staff is contacted first.  Staff and reviewers will call dibs on the books they want to review a few weeks after the initial call-out.
+
+### Mid October - Send assignments
+
+The Arts Desk sends assignments for reviews.
+
+### Late October - Add additional book data fields
+
+The Arts Desk will add in additional fields for book records, such as ISBNs.  They usually do this in one fell swoop and often use an intern to do the work.  Because ISBNs are required to pull cover images, the Visuals team uses a test version of the spreadsheet, usually with previous year's data to test the rig.
+
+### End of October - All write-ups due
+
+The Visuals Team publishes the site to staging with the most recent book list and a first pass at colors.
+
+### Mid November - Copy editing
+
+The Visuals Team publishes the site to staging with the most recent book list and finalized colors.
+
+This facilitates copy editing, which is a drawn out process that goes all the way until launch.
+
+### Late November - Generate promo image
+
+The Visuals Team runs a script to generate the promo image, a composite of book cover images.  This happens later than sharing the staging site because the book list can change.
+
+### Late November - Set up stub page in Seamus
+
+The Arts Desk sets up a stub page in Seamus.  Either the Arts Desk or Visuals emails Online Tech. to tell them to redirect the stub page to the app URL.
+
+### Late November - Tag meeting
+
+The Arts Desk meets to determine if the tags they have selected for the books make books easy for users to discover.
+
+Prior to this meeting, the Visuals team generates a tag audit report and republishes the site to staging.
+
+### Late November - Get edits back from copy editors
+
+### Before launch - Make a launch plan
+
+Before launch, the Arts Desk coordinates with the people who produce the home page and social media teams ot make a plan for launching the site.
+
+### Early December - Launch!
+
+On launch day the Arts Desk pays close attention to Chartbeat and other analytics.
+
+### Shortly after launch - Generate analytics report
+
+The Visuals Team generates a [report](https://docs.google.com/document/d/1fLbphzWXt_I8LSf6iW7urJCBeo1B-MX5iyWIfCOH-xA/edit#) of how the app did in it's first few days that includes total traffic, unique views, info about individual tag traffic.
+
+Data Flow
+---------
+
+TODO: Better summarize the data flow.
+
+The books, their reviews and other metadata originate in a Google Spreadsheet, this is serialized as ? and passed to Underscore templates to render the user-facing HTML.
+
+The book reviews start in a Google Spreadsheet.
+
+The [Load books and covers](#load-books-and-covers) section describes the configuration needed to tell this project's code how to access the book list spreasdsheet.
+
+The `data.load_books` Fabric task downloads the books spreadsheet as CSV and saves it as `data/books.csv`.  It then takes the downloaded CSV file, does some validation and normalization of the data (which is mostly handled inside the `Book` class) and stores the output as JSON in `www/static-data/books.json`.  The task also writes some other CSV files, but I'm not sure what they do.
+
+A sample book entry in `www/static-data/books.json` looks like this:
+
+```
+{
+  "author": "Mona Awad",
+  "book_seamus_id": "472159879",
+  "external_links": [],
+  "hide_ibooks": "",
+  "html_text": false,
+  "isbn": "0143128485",
+  "isbn13": "9780143128489",
+  "itunes_id": "998405272",
+  "links": [
+    {
+      "category": "Feature",
+      "title": "NPR's Book Concierge: Our Guide To 2016's Great Reads",
+      "url": "http://www.npr.org/2016/12/06/503179028/nprs-book-concierge-our-guide-to-2016s-great-reads"
+    },
+    {
+      "category": "Interview",
+      "title": "'You Cannot Shame Me': 2 New Books Tear Down 'Fat Girl' Stereotypes",
+      "url": "http://www.npr.org/2016/03/31/472132175/you-cannot-shame-me-two-new-books-tear-down-fat-girl-stereotypes"
+    },
+    {
+      "category": "Read an excerpt",
+      "title": "",
+      "url": "http://www.npr.org/472159879#excerpt"
+    }
+  ],
+  "reviewer": "Lynn Neary",
+  "reviewer_id": "correspondent, Arts Desk",
+  "reviewer_link": "http://www.npr.org/people/2100948/lynn-neary",
+  "slug": "13-ways-of-looking-at-a-fat-girl-fiction",
+  "tags": [
+    "staff-picks",
+    "book-club-ideas",
+    "identity-and-culture",
+    "realistic-fiction"
+  ],
+  "teaser": "The title of this book might be off-putting \u2014 after all, the word \"fat\" makes people uncomfortable. We prefer euphemisms like \"chubby\" or \"big.\" But novelist Mona Awad ...",
+  "text": "The title of this book might be off-putting \u2014 after all, the word \"fat\" makes people uncomfortable. We prefer euphemisms like \"chubby\" or \"big.\" But novelist Mona Awad uses the word deliberately. She wants her readers to understand how a struggle with body image can take over a life. Lizzie, the fat girl of the title, is an insecure, overweight young woman who lets men take advantage of her in humiliating ways. Later we meet her as an older, thin woman, obsessed with staying fit, but big or small, happiness eludes her. Awad is a fine writer with a keen sense of black humor, which makes this often sad story more entertaining than you might expect.",
+  "title": "13 Ways Of Looking At A Fat Girl: Fiction"
+}
+```
+
+The `render.render_all` Fabric task iterates through all the Flask views and renders them to static files.  This includes the `index` view in `app.py` which loads `www/static-data/books.json` and renders the JSON as the `window.BOOKS` JavaScript variable in a `<script>` tag near the bottom of the page.  The template rendered by this view is `templates/index.html`.
+
+The `on_book_hash()` function in `www/js/app.js` selects a book object from the `BOOKS` array and passes it to the `JST.book_modal` template function as the `book` context variable.  That template is defined in `jst/book_modal.html`.
+
+Books Spreadsheet Fields
+------------------------
+
+### User-facing fields
+
+These fields are listed in the order in which they're rendered in the `jst/book_modal.html` template.
+
+#### TITLE
+
+Example values: `13 Ways Of Looking At A Fat Girl: Fiction`
+
+JSON/template property: title
+
+#### AUTHOR
+
+JSON/template property: author
+
+Example values: `Mona Awad`
+
+This property is optional.
+
+
+#### TAGS
+
+JSON/template property: tags
+
+Example values: `Mysteries & Thrillers, Staff Picks`
+
+This property is optional.
+
+#### text
+
+The book desription/review.
+
+JSON/template property: text
+
+Example values: `Count Alexander Rostov is a resourceful man who loves the finer things in life. When he is sentenced by the Bolsheviks to a lifetime of house arrest in a tiny room in the attic of Moscow's best hotel, he uses his charm and wit to build a new life that is in some ways richer than his old one. While wars both hot and cold rage in the outside world, Count Rostov finds purpose and people to love within the confines of the Metropol. The count, says author Amor Towles, has a <a href="http:// http://www.npr.org/2016/09/06/492434255/idea-for-gentleman-in-moscow-came-from-many-nights-in-luxury-hotels" target="_blank" >will to joy.</a> No wonder, then, that <em>A Gentleman in Moscow</em> is a joyful read.`
+
+#### html text
+
+JSON/template property: html\_text
+
+While referenced in the template, it doesn't appear that this value will ever be rendered by the template logic.
+
+#### REVIEWER
+
+JSON/template property: reviewer
+
+Example values: `Lynn Neary`
+
+This property is optional.
+
+#### REVIEWER LINK
+
+JSON/Template property: reviewer\_link
+
+Example values: `http://www.npr.org/people/497524072/natalie-winston`
+
+This property is optional.
+
+#### REVIEWER ID
+
+JSON/template property: reviewer\_id
+
+Example values: `correspondent, Arts Desk`, `<em>Weekend Edition</em> staff`
+
+This property is optional.
+
+#### isbn
+
+JSON/template property: isbn
+
+Example values: `0812992989`
+
+#### hide\_ibooks
+
+JSON/template property: hide\_ibooks
+
+Example values: ``, `TRUE`
+
+This property is optional.
+
+This value is populated by the visuals team.
+
+TODO: Explain how it is populated.
+
+#### itunes\_id
+
+JSON/template property: itunes\_id
+
+Example values: `998405272`
+
+This field will not be rendered if `hide_ibooks` is `TRUE`.
+
+It will only be used to generate the iTunes URL if the `USE_ITUNES_ID` is set to `True`.
+
+This value is populated by the visuals team.
+
+TODO: Explain how it is populated.
+
+#### goodreads\_id
+
+JSON/template property: goodreads\_id
+
+Example values: `31915219`
+
+This value is populated by the visuals team.
+
+TODO: Explain how it is populated.
+
+#### book\_seamus\_id
+
+JSON/template property: links
+
+Example values: `498577009`
+
+This property is optional.
+
+#### EXTERNAL LINKS HTML
+
+JSON/template property: external_links
+
+Example values: `<li class="external-link">KMUW: <strong><a href="http://kmuw.org/post/book-review-great-reckoning-lyrical-whodunnit" target="_blank">Book Review: 'A Great Reckoning' Is A Lyrical Whodunnit</a></strong></li>`
+
+This property is optional.
+
+### Internal fields
+
+These fields are used for project management purposes and are not output as JSON or rendered to the end user.
+
+#### EDITOR (internal use)
+
+Example values: `Beth`
+
+#### COST
+
+Example values: `0`, `40`
+
+#### GENRE
+
+JSON/template property: genre
+
+Example values: `Fiction`
+
+This property is optional.
+
+#### Assigned (1=yes)
+
+
+#### Author Diversity (1=yes, 0=no)
+
+Example values: `0`, `1`
+
+###	REVIEWER DIVERSITY (1=yes, 0=no)
+
+#### CONTACTED?
+
+Example values: ``, `1`
+
+
+### Unused fields
+
+These fields didn't seem to be filled out for any of the book rows in the 2016 spreadsheet.
+
+#### asin
+
+#### oclc
+
+#### genre (internal use)
+
+#### fact-checking notes
+
+#### Gender (1=woman, 0=man)
+
+
 Bootstrap the project
 ---------------------
 
@@ -84,21 +403,29 @@ pip install -r requirements.txt
 npm install
 ```
 
+**Problems installing requirements?** You may need to run the pip command as ``ARCHFLAGS=-Wno-error=unused-command-line-argument-hard-error-in-future pip install -r requirements.txt`` to work around an issue with OSX.
+
+Next, we will download and parse the text used for copy editing. If we don't do this, subsequent update commands fail:
+
+```
+fab text.update
+```
+
 After that we will need to download and parse our book list and covers:
 
 ```
 fab data.update
 ```
 
-_Note: The `DATA_GOOGLE_DOC_KEY` spreadsheet pointed in `app_config.py` has to be published as a csv in order for the above command to work_
+_Note: The `DATA_GOOGLE\_DOC\_KEY` spreadsheet pointed in `app\_config.py` has to be published as a csv in order for the above command to work_
+
+_Note: In order for cover images to be loaded, each book record has to have an ISBN value.  The books team enters this data, but doesn't get to it until later in the process.  If you want to test out the rig, you'll probably want to make a test version of the spreadsheet that includes more complete data, including ISBNs.  You can specify the test spreadsheet key by overriding the value of `DATA\_GOOGLE\_DOC\_KEY` in a `local\_settings` module._
 
 Once that has been run, then we can do a full update that will sync also fonts & copy:
 
 ```
 fab update
 ```
-
-**Problems installing requirements?** You may need to run the pip command as ``ARCHFLAGS=-Wno-error=unused-command-line-argument-hard-error-in-future pip install -r requirements.txt`` to work around an issue with OSX.
 
 Hide project secrets
 --------------------
@@ -250,8 +577,8 @@ View a [sample data spreadsheet](https://docs.google.com/spreadsheets/d/10XgwGi6
 In order to get the covers for our books we are using an external service from BAKER & TAYLOR, in order to use it you will need your own credentials stored in these environment variables.
 
 ```
-books16_BAKER_TAYLOR_USERID="SampleUser"
-books16_BAKER_TAYLOR_PASSWORD="SamplePassword"
+books17_BAKER_TAYLOR_USERID="SampleUser"
+books17_BAKER_TAYLOR_PASSWORD="SamplePassword"
 ```
 
 Then run the loader:
@@ -267,6 +594,100 @@ single command:
 ```
 fab update
 ```
+
+Get iTunes IDs
+--------------
+
+To create links that allow users to purchase books in the iTunes store, we need to add IDs to the `itunes_id` column of the books spreadsheet.  There is a Fabric task, `data.get_books_itunes_ids` that you can run to output a CSV from which you can copy and paste the IDs into the Books Google Spreadsheet.
+
+There are however, a few caveats that are important to keep in mind.
+
+This command takes a long time to run in order to get around the rate limiting of the iTunes search API.  It's probably best to run it first thing in the morning or to let it run overnight.
+
+You'll want to make sure you update the book data before running this command.  Otherwise, the rows won't line up when you copy and paste into the Google Spreadsheet.  For the same reason, you will want to run the command when the book list is in a pretty stable state.
+
+Now that you know the caveats, here's the task:
+
+```
+fab data.get_books_itunes_ids
+```
+
+By default, the command will read the books from `data/books.csv` and output the resulting iTunes IDs to `data/itunes_ids.csv`, but you can override either path:
+
+```
+fab data.get_books_itunes_ids:input_filename=data/new_books.csv,output_filename=data/new_books_itunes_ids.csv
+```
+
+This might be useful if you wanted to only get IDs for a subset of books that were added to the spreadsheet after the last time you fetched IDs.
+
+If you need to get an iTunes ID for a single book, you can use the `data.get_book_itunes_id` task.
+
+```
+fab data.get_book_itunes_id:"The Apparitionists"
+```
+
+Get Goodreads IDs
+-----------------
+
+*NEW FOR 2017*
+
+To generate links that allow users to access a book's Goodreads page, we need to get the Goodreads slug for each book. To get these slugs, you can run the Fabric task `data.get_books_goodreads_ids`, which will output a CSV from which you can copy and paste the slug into the `goodreads_id` column of the Books Google Spreadsheet.
+
+There are a couple of caveats when running this command.
+
+This command takes around 15-20 minutes to bypass the rate limiting of the Goodreads search API.  It's probably best to run it first thing in the morning or to let it run overnight.
+
+You'll want to make sure you update the book data before running this command.  Otherwise, the rows won't line up when you copy and paste into the Google Spreadsheet.  For the same reason, you will want to run the command when the book list is in a pretty stable state.
+
+To use the Goodreads API, you need a developer key. You should set this key as an environment variable like so: `books17_GOODREADS_API_KEY=YOUR_KEY_HERE` . If you need to replace this key, it's fairly simple to generate a new one from the [Goodreads API page](https://www.goodreads.com/api).
+
+Here's the task:
+
+```
+fab data.get_books_goodreads_ids
+```
+
+By default, the command will read the books from `data/books.csv` and output the resulting iTunes IDs to `data/goodreads_ids.csv`, but you can override either path:
+
+```
+fab data.get_books_goodreads_ids:input_filename=data/new_books.csv,output_filename=data/new_books_goodreads_ids.csv
+```
+
+This might be useful if you wanted to only get the Goodreads slugs for a subset of books that were added to the spreadsheet after the last time you fetched them.
+
+If you need to get a Goodreads ID for a single book, you can use the `data.get_book_goodreads_id` task.  Note that the argument to the task is the book's ISBN.
+
+```
+fab data.get_book_goodreads_id:0544745973
+```
+
+Get Links to Member Station Coverage
+------------------------------------
+
+*NEW FOR 2017*
+
+The Books team tries to surface member station coverage of books. This content is pulled from a comma-separated list of HTML links (i.e. `<a>` tags) in the `EXTERNAL LINKS HTML`.
+
+In 2017, the Books time decided to send a [Google Form](https://docs.google.com/forms/d/11VfB7WeBIg1YQKNzfVzbU5rae53PJ02d4Xm4e9yIajA/edit) to member stations soliciting their book coverage.  They asked for ISBNs to make it easier to programatically merge the station content with the books spreadsheet.
+
+After the submissions close, you should add an `add_to_concierge` column to the spreadsheet and set the value of the cell to `TRUE` for any links that you want to include in the concierge.
+
+You'll also need to publish the spreadsheet to the web as CSV.
+
+Then, you can run:
+
+```
+fab data.update
+fab data.load_external_links
+```
+
+This Fabric task does a few things.  First, it downloads the form responses spreadsheet as CSV to `data/external_links.csv`. It then parses the CSV, fetches the station coverage titles from the web, builds a lookup table and stores that as JSON in `data/external_links_by_isbn.json`.  Finally, it merges the books in the book list with the external links and outputs a CSV file in `data/external_links_to_merge.csv`.
+
+Since we get the page titles by requesting and parsing the HTML, this command can take a few minutes to run.
+
+The values in `data/external_links_to_merge.csv` can be copied and pasted into the books Google Spreadsheet.  Because the order of rows in the CSV file follows the books spreadsheet, it makes sense to run this command after the book list is very stable.  Also, be sure that the local CSV of the book list is up-to-date by running `fab data.update`.
+
+As we're pulling titles of the coverage from the pages' `<title>` tag, you'll probably want to edit the link text after you copy the links into the books spreadsheet.
 
 Arbitrary Google Docs
 ----------------------
