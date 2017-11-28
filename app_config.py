@@ -142,7 +142,7 @@ EXTERNAL_LINKS_GOOGLE_DOC_KEY = "2PACX-1vSPsl2tLd7FwzPhZzc9DfiFM1ymQy9ZLD7AzMgh7
 # last year.
 EXTERNAL_LINKS_COLUMNS = {
     'isbn': "10-Digit ISBN",
-    'station_name': "Your station",
+    'station_name': "Your Station",
     'url': "Link to coverage",
     'add_to_concierge': 'add_to_concierge',
 }
