@@ -13,11 +13,9 @@ from HTMLParser import HTMLParser
 import json
 import logging
 import os
-import sys
 
 from csvkit.py2 import CSVKitDictReader, CSVKitDictWriter
 import requests
-from requests.exceptions import RequestException
 
 import app_config
 
@@ -30,37 +28,37 @@ logger.setLevel(app_config.LOG_LEVEL)
 # Configure some default values.  This is mostly to keep line lengths
 # down when specifying these values as defaults for function arguments.
 DEFAULT_BOOKS_CSV = os.path.join('data', 'books.csv')
-DEFAULT_EXTERNAL_LINKS_CSV = os.path.join('data', 'external_links.csv')
-DEFAULT_EXTERNAL_LINKS_OUTPUT_CSV = os.path.join('data',
+DEFAULT_STATION_COVERAGE_CSV_PATH = os.path.join('data',
+    'station_coverage.csv')
+DEFAULT_STATION_COVERAGE_HEADLINES_CSV_PATH = os.path.join('data',
+    'station_coverage_headlines.csv')
+DEFAULT_EXTERNAL_LINKS_OUTPUT_CSV_PATH = os.path.join('data',
     'external_links_to_merge.csv')
-DEFAULT_EXTERNAL_LINKS_JSON = os.path.join('data',
+DEFAULT_EXTERNAL_LINKS_JSON_PATH = os.path.join('data',
     'external_links_by_isbn.json')
-DEFAULT_ISBN_KEY = app_config.EXTERNAL_LINKS_COLUMNS['isbn']
-DEFAULT_STATION_KEY = app_config.EXTERNAL_LINKS_COLUMNS['station_name']
-DEFAULT_URL_KEY = app_config.EXTERNAL_LINKS_COLUMNS['url']
-DEFAULT_INCLUDE_KEY = app_config.EXTERNAL_LINKS_COLUMNS['add_to_concierge']
+DEFAULT_ISBN_KEY = app_config.STATION_COVERAGE_COLUMNS['isbn']
+DEFAULT_TITLE_KEY = app_config.STATION_COVERAGE_COLUMNS['book_title']
+DEFAULT_HEADLINE_KEY = app_config.STATION_COVERAGE_COLUMNS['headline']
+DEFAULT_STATION_KEY = app_config.STATION_COVERAGE_COLUMNS['station_name']
+DEFAULT_URL_KEY = app_config.STATION_COVERAGE_COLUMNS['url']
 
 
-def get_external_links_csv(output_path=DEFAULT_EXTERNAL_LINKS_CSV):
+def get_station_coverage_csv(output_path=DEFAULT_STATION_COVERAGE_CSV_PATH):
     """
     Download CSV for links to coverage of books from member stations.
 
-    Note that the first worksheet of the spreadsheet tied to the Google Form
-    needs to be published to the web as CSV in order for this to work.
+    The station coverage Google Sheet should be published to the web as CSV
+    for this to work.
 
     """
-    csv_url = ('https://docs.google.com/spreadsheets/d/e/%s/pub'
-               '?output=csv') % (
-                   app_config.EXTERNAL_LINKS_GOOGLE_DOC_KEY)
+    csv_url = 'https://docs.google.com/spreadsheets/d/e/%s/pub?gid=0&single=true&output=csv' % (
+        app_config.STATION_COVERAGE_GOOGLE_DOC_KEY)
     r = requests.get(csv_url)
     if r.headers['content-type'] != 'text/csv':
-        logger.error(('Unexpected Content-type: %s. Are you sure the '
-                      'spreadsheet is published as csv?') %
-                     r.headers['content-type'])
-        sys.exit(1)
-
-    with open(output_path, 'wb') as writefile:
-        writefile.write(r.content)
+        logger.error('Unexpected Content-type: %s. Are you sure the spreadsheet is published as csv?' % r.headers['content-type'])
+    else:
+        with open(output_path, 'wb') as writefile:
+            writefile.write(r.content)
 
 
 class TitleHTMLParser(HTMLParser):
@@ -112,22 +110,23 @@ def get_link_title(url):
     return parser.title
 
 
-def get_link_html(url, station_name):
+def get_link_html(url, station_name, headline):
     """
     Returns HTML for a link for member station content.
 
     Args:
         url (str): URL of station coverage of a book.
         station_name (str): Name of station.
+        headline (str): Headline of the article.
 
     Returns:
         str: String containing HTML linking to the content.
 
     """
-    return '<a href="%s">%s: %s</a>' % (
+    return '<li class="external-link">%s: <strong><a href="%s" target="_blank">%s</a></strong></li>' % (
+            station_name.strip(),
             url,
-            station_name,
-            get_link_title(url)
+            headline.strip()
         )
 
 
@@ -141,16 +140,56 @@ def parse_spreadsheet_boolean(val):
     return False
 
 
-def parse_external_links_csv(csv_path=DEFAULT_EXTERNAL_LINKS_CSV,
-                             json_path=DEFAULT_EXTERNAL_LINKS_JSON,
-                             isbn_key=DEFAULT_ISBN_KEY,
-                             station_key=DEFAULT_STATION_KEY,
-                             url_key=DEFAULT_URL_KEY,
-                             include_key=DEFAULT_INCLUDE_KEY):
+def get_station_coverage_headlines(csv_path=DEFAULT_STATION_COVERAGE_CSV_PATH,
+        output_path=DEFAULT_STATION_COVERAGE_HEADLINES_CSV_PATH,
+        isbn_key=DEFAULT_ISBN_KEY,
+        title_key=DEFAULT_TITLE_KEY,
+        url_key=DEFAULT_URL_KEY,
+        headline_key=DEFAULT_HEADLINE_KEY):
     """
-    Convert external links CSV to a JSON lookup table.
+    Get headlines for station coverage links.
 
-    Convert external links CSV of a JSON lookup table that goes from ISBN
+    Args:
+        csv_path (str): Path to input CSV file.
+        output_path (str): Path to output CSV file.
+        isbn_key (str): Column name in the CSV data for the column that
+            contains the book's ISBN.
+        title_key (str): Column name in the CSV data for the column that
+            contains the book's title.
+        url_key (str): Column name in the CSV data for the column that
+            contains the station coverage URL.
+        headline_key (str): Column name in the CSV data for the colum that
+            contains the station coverage headline.
+
+    """
+    with open(csv_path) as f:
+        reader = CSVKitDictReader(f)
+
+        with open(output_path, 'wb') as fout:
+            fieldnames = [title_key, isbn_key, headline_key]
+            writer = CSVKitDictWriter(fout, fieldnames=fieldnames)
+            writer.writeheader()
+
+            for row in reader:
+                output_row = {}
+                output_row[isbn_key] = row[isbn_key]
+                output_row[title_key] = row[title_key]
+                url = row[url_key]
+                if url:
+                    output_row[headline_key] = get_link_title(url)
+                writer.writerow(output_row)
+
+
+def parse_station_coverage_csv(csv_path=DEFAULT_STATION_COVERAGE_CSV_PATH,
+                               json_path=DEFAULT_EXTERNAL_LINKS_JSON_PATH,
+                               isbn_key=DEFAULT_ISBN_KEY,
+                               station_key=DEFAULT_STATION_KEY,
+                               headline_key=DEFAULT_HEADLINE_KEY,
+                               url_key=DEFAULT_URL_KEY):
+    """
+    Convert station coverage CSV to a JSON lookup table.
+
+    Convert station coverage CSV to a JSON lookup table that goes from ISBN
     to HTML links.  This can then be joined with the book data.
 
     Args:
@@ -160,11 +199,10 @@ def parse_external_links_csv(csv_path=DEFAULT_EXTERNAL_LINKS_CSV,
             contains the book's ISBN.
         station_key (str): Column name in the CSV data for the column that
             contains the book's station.
+        headline_key (str): Column name in the CSV data for the colum that
+            contains the station coverage headline.
         url_key (str): Column name in the CSV data for the column that
-            contains the URL to the member station coverage.
-        include_key(str): Column name in the CSV data for the column that
-            contains the flag which indicates whether the link should
-            ultimately be merged into the book list.
+            contains the station coverage URL.
 
     """
     external_links_by_isbn = {}
@@ -174,21 +212,31 @@ def parse_external_links_csv(csv_path=DEFAULT_EXTERNAL_LINKS_CSV,
 
         for row in reader:
             isbn = row[isbn_key]
-            if not isbn or not parse_spreadsheet_boolean(row[include_key]):
-                continue
 
             url = row[url_key]
             station_name = row[station_key]
+            headline = row[headline_key]
 
-            try:
-                link_html = get_link_html(url, station_name)
-            except RequestException:
-                continue
             links = external_links_by_isbn.setdefault(isbn, [])
+            link_html = get_link_html(url, station_name, headline)
             links.append(link_html)
 
         with open(json_path, 'wb') as writefile:
             writefile.write(json.dumps(external_links_by_isbn))
+
+
+def get_isbn_choices(isbn):
+    choices = [isbn]
+
+    padded = '{:0<10}'.format(isbn)
+    if padded != isbn:
+        choices.append(padded)
+
+    stripped = isbn.lstrip('0')
+    if stripped != isbn:
+        choices.append(stripped)
+
+    return choices
 
 
 def lookup_links_by_isbn(isbn, lookup):
@@ -203,11 +251,10 @@ def lookup_links_by_isbn(isbn, lookup):
             of HTML links.
 
     """
-    try:
-        return lookup[isbn]
-    except KeyError:
+    isbn_choices = get_isbn_choices(isbn)
+    for isbn_choice in isbn_choices:
         try:
-            return lookup[isbn.lstrip('0')]
+            return lookup[isbn_choice], isbn_choice
         except KeyError:
             pass
 
@@ -215,8 +262,8 @@ def lookup_links_by_isbn(isbn, lookup):
 
 
 def merge_external_links(books_csv_path=DEFAULT_BOOKS_CSV,
-                         links_json_path=DEFAULT_EXTERNAL_LINKS_JSON,
-                         output_csv_path=DEFAULT_EXTERNAL_LINKS_OUTPUT_CSV):
+                         links_json_path=DEFAULT_EXTERNAL_LINKS_JSON_PATH,
+                         output_csv_path=DEFAULT_EXTERNAL_LINKS_OUTPUT_CSV_PATH):
     """
     Create a CSV file containing external links.
 
@@ -259,9 +306,9 @@ def merge_external_links(books_csv_path=DEFAULT_BOOKS_CSV,
 
                     if book['isbn']:
                         try:
-                            links = lookup_links_by_isbn(book['isbn'], lookup)
+                            links, matching_isbn = lookup_links_by_isbn(book['isbn'], lookup)
                             output_book['external_links_html'] = ','.join(links)
-                            matched.add(book['isbn'])
+                            matched.add(matching_isbn)
                         except KeyError:
                             # No matching member station coverage.  This is OK.
                             pass

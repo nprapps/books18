@@ -58,7 +58,8 @@ data/tag-audit.csv
 data/goodreads_ids.csv
 data/itunes_ids.csv
 data/book_reviews.csv
-data/external_links.csv
+data/station_coverage.csv
+data/station_coverage_headlines.csv
 data/external_links_by_isbn.json
 data/external_links_to_merge.csv
 data/test*.csv

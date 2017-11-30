@@ -670,24 +670,34 @@ The Books team tries to surface member station coverage of books. This content i
 
 In 2017, the Books time decided to send a [Google Form](https://docs.google.com/forms/d/11VfB7WeBIg1YQKNzfVzbU5rae53PJ02d4Xm4e9yIajA/edit) to member stations soliciting their book coverage.  They asked for ISBNs to make it easier to programatically merge the station content with the books spreadsheet.
 
-After the submissions close, you should add an `add_to_concierge` column to the spreadsheet and set the value of the cell to `TRUE` for any links that you want to include in the concierge.
+After the submissions close, Books editors copy the links and station information for coverage they want to include in the concierge into a [separate spreadsheet](https://docs.google.com/spreadsheets/d/16Zt1Zs5bghJrZ_5oCS04UUXrk_WrRTjGGs9IbZw5ogM/edit)
 
-You'll also need to publish the spreadsheet to the web as CSV.
+You'll also need to publish this spreadsheet to the web as CSV.
 
 Then, you can run:
+
+```
+fab data.update
+fab data.load_station_coverage_headlines
+```
+
+to create a CSV file that contains headlines for the station coverage that can be copied and pasted back into the Google spreadsheet for editing.  This CSV file is `data/station_coverage_headlines.csv`.
+
+Since we get the headlines by requesting and parsing the HTML, this command can take a few minutes to run.
+
+As we're pulling headlines of the coverage from the pages' `<title>` tag, you'll probably want to edit the headline text after you copy them into the Google sheet.
+
+Once headlines have been populated and edited, you can run:
 
 ```
 fab data.update
 fab data.load_external_links
 ```
 
-This Fabric task does a few things.  First, it downloads the form responses spreadsheet as CSV to `data/external_links.csv`. It then parses the CSV, fetches the station coverage titles from the web, builds a lookup table and stores that as JSON in `data/external_links_by_isbn.json`.  Finally, it merges the books in the book list with the external links and outputs a CSV file in `data/external_links_to_merge.csv`.
+This Fabric task does a few things.  First, it downloads the station coverage Google spreadsheet as CSV to `data/station_coverage.csv`. It then generates HTML links for the station coverage and builds a lookup table by ISBN and stores that as JSON in `data/external_links_by_isbn.json`.  Finally, it merges the books in the book list with the external links and outputs a CSV file in `data/external_links_to_merge.csv`.
 
-Since we get the page titles by requesting and parsing the HTML, this command can take a few minutes to run.
+The values in `data/external_links_to_merge.csv` can be copied and pasted into the books Google spreadsheet.  Because the order of rows in the CSV file follows the books spreadsheet, it makes sense to run this command after the book list is very stable.  Also, be sure that the local CSV of the book list is up-to-date by running `fab data.update`.
 
-The values in `data/external_links_to_merge.csv` can be copied and pasted into the books Google Spreadsheet.  Because the order of rows in the CSV file follows the books spreadsheet, it makes sense to run this command after the book list is very stable.  Also, be sure that the local CSV of the book list is up-to-date by running `fab data.update`.
-
-As we're pulling titles of the coverage from the pages' `<title>` tag, you'll probably want to edit the link text after you copy the links into the books spreadsheet.
 
 Arbitrary Google Docs
 ----------------------

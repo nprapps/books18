@@ -10,8 +10,9 @@ import copytext
 import csv
 import errno
 from external_links import (
-    get_external_links_csv,
-    parse_external_links_csv,
+    get_station_coverage_csv,
+    get_station_coverage_headlines,
+    parse_station_coverage_csv,
     merge_external_links)
 import json
 import locale
@@ -888,8 +889,14 @@ def get_book_goodreads_id(isbn):
 
 
 @task
+def load_station_coverage_headlines():
+    get_station_coverage_csv()
+    get_station_coverage_headlines()
+
+
+@task
 def load_external_links():
     """Get links to member station book coverage"""
-    get_external_links_csv()
-    parse_external_links_csv()
+    get_station_coverage_csv()
+    parse_station_coverage_csv()
     merge_external_links()

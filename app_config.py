@@ -132,19 +132,19 @@ try:
 except ImportError:
     pass
 
-# Google Spreadsheet corresponding to a Google Form used to solicit links to
-# coverage from member stations.
-EXTERNAL_LINKS_GOOGLE_DOC_KEY = "2PACX-1vSPsl2tLd7FwzPhZzc9DfiFM1ymQy9ZLD7AzMgh7WPRSn0qWt4QqDCntIFdcvxFGLzsxq1GsBUjmVak"
+# Google Spreadsheet used to edit member station coverage links
+STATION_COVERAGE_GOOGLE_DOC_KEY = "2PACX-1vRZMJx2fDRPIKMxVQt0GPLbv99sOwcNZkUATp0B9xmRb1AfA6ZiA3G2wLYoJ58jbmGMvwVxBwplv3L5"
 # Normalized lookup of column names.
 # This is intended to avoid having to dive into the code if the column names
 # (which correspond to form questions) change from year to year.
 # You shouldn't have to change these if you just copy the Google Form from
 # last year.
-EXTERNAL_LINKS_COLUMNS = {
-    'isbn': "10-Digit ISBN",
-    'station_name': "Your Station",
-    'url': "Link to coverage",
-    'add_to_concierge': 'add_to_concierge',
+STATION_COVERAGE_COLUMNS = {
+    'book_title': "Book",
+    'isbn': "ISBN",
+    'station_name': "Member station",
+    'url': "Link",
+    'headline': "Headline",
 }
 
 # Allow override
