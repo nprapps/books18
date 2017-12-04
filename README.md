@@ -698,6 +698,8 @@ This Fabric task does a few things.  First, it downloads the station coverage Go
 
 The values in `data/external_links_to_merge.csv` can be copied and pasted into the books Google spreadsheet.  Because the order of rows in the CSV file follows the books spreadsheet, it makes sense to run this command after the book list is very stable.  Also, be sure that the local CSV of the book list is up-to-date by running `fab data.update`.
 
+I had some issues with row mismatches when copying and pasting the generated external links column out of Excel and into the books Google sheet. I had much better luck just importing the CSV as a new worksheet into the Google spreadsheet and copying and pasting into the books worksheet.
+
 
 Arbitrary Google Docs
 ----------------------
