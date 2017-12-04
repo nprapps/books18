@@ -890,6 +890,7 @@ def get_book_goodreads_id(isbn):
 
 @task
 def load_station_coverage_headlines():
+    """Get headlines from station coverage links"""
     get_station_coverage_csv()
     get_station_coverage_headlines()
 
