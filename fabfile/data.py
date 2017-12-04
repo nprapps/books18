@@ -678,6 +678,8 @@ def load_images():
 
     print "Start load_images(): %i books." % len(books)
 
+    always_use_npr_cover = set(app_config.ALWAYS_USE_NPR_COVER)
+
     # Loop.
     for book in books:
 
@@ -718,7 +720,11 @@ def load_images():
             writefile.write(r.content)
 
         file_size = os.path.getsize(imagepath)
-        if file_size < 10000:
+        use_npr_book_page = (
+                file_size < 10000 or
+                book['isbn'] in always_use_npr_cover
+        )
+        if use_npr_book_page:
             logger.info('(%s): Image not available from Baker and Taylor, using NPR book page' % book['title'])
             url = 'http://www.npr.org/%s' % book['book_seamus_id']
             npr_r = requests.get(url)

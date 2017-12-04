@@ -120,6 +120,14 @@ except ImportError:
     pass
 
 
+# List of ISBNs where we should always prefer the NPR cover over the one from
+# the Baker & Taylor API
+ALWAYS_USE_NPR_COVER = [
+    # White Fur
+    "0451497929",
+]
+
+
 LINK_CATEGORY_MAP = {
     'Author Interviews': 'Interview',
     'Book Reviews': 'Review',
