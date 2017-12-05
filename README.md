@@ -88,6 +88,7 @@ The Visuals Team makes a copy of the project code and pushes it to a new reposto
 * Push copy to a new GitHub repository.
 * Create a new version of the copy spreadsheet.
 * Create a testing version of the books spreadsheet that includes ISBN values for book records.
+* Replace all references to the previous year with the current year.
 
 ### January - Create a new version of the books spreadsheet
 
