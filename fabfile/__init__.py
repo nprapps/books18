@@ -151,7 +151,7 @@ def update():
     Update all application data not in repository (copy, assets, etc).
     """
     text.update()
-    # data.update()
+    data.update()
     assets.sync()
 
 
