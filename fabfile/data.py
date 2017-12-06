@@ -662,6 +662,28 @@ def load_books():
     logger.info("end load_books")
 
 
+def _get_npr_cover_img_url(book):
+    """Scrape the URL for a book's cover image from Seamus"""
+    url = 'http://www.npr.org/%s' % book['book_seamus_id']
+    npr_r = requests.get(url)
+    soup = BeautifulSoup(npr_r.content, 'html.parser')
+    try:
+        img = soup.select('.bookedition .image img')[0]
+        # The raw HTML includes the URL for a small, low-quality version of
+        # the cover image.
+        # E.g.
+        # https://media.npr.org/assets/bakertaylor/covers/manually-added/pretty-face_custom-475aae6662b7fa564615137862d2d9a2102190c1-s99-c15.jpg
+        # Luckily, the size and quality can be adjusted via the filename in
+        # the URL.
+        return img.attrs.get('src')\
+                  .replace('-s99', '-s400')\
+                  .replace('-c15', '-c85')
+    except IndexError:
+        # No `<img>` tag found.
+        raise ValueError("No cover image found at %s for %s" % (
+            url, book['title']))
+
+
 @task
 def load_images():
     """
@@ -725,18 +747,22 @@ def load_images():
                 book['isbn'] in always_use_npr_cover
         )
         if use_npr_book_page:
-            logger.info('(%s): Image not available from Baker and Taylor, using NPR book page' % book['title'])
-            url = 'http://www.npr.org/%s' % book['book_seamus_id']
-            npr_r = requests.get(url)
-            soup = BeautifulSoup(npr_r.content, 'html.parser')
+            msg = ('(%s): Image not available from Baker and Taylor, '
+                   'using NPR book page') % book['title']
+            logger.info(msg)
             try:
-                alt_img_url = soup.select('.bookedition .image img')[0].attrs.get('src').replace('s99', 's400')
-                logger.info('LOG (%s): Getting alternate image from %s' % (book['title'], alt_img_url))
+                alt_img_url = _get_npr_cover_img_url(book)
+                msg = 'LOG (%s): Getting alternate image from %s' % (
+                    book['title'], alt_img_url)
+                logger.info(msg)
                 alt_img_resp = requests.get(alt_img_url)
                 with open(imagepath, 'wb') as writefile:
                     writefile.write(alt_img_resp.content)
-            except IndexError:
-                logger.info('ERROR (%s): Image not available on NPR book page either (%s)' % (book['title'], url))
+            except ValueError:
+                msg = (
+                    'ERROR (%s): Image not available on NPR book page either'
+                ) % (book['title'])
+                logger.info(msg)
 
         image = Image.open(imagepath)
         image.save(imagepath, optimize=True, quality=75)
