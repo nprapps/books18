@@ -730,10 +730,7 @@ def load_images():
             npr_r = requests.get(url)
             soup = BeautifulSoup(npr_r.content, 'html.parser')
             try:
-                if book['title'] == 'The Three-Body Problem':
-                    alt_img_url = 'http://media.npr.org/assets/bakertaylor/covers/t/the-three-body-problem/9780765377067_custom-d83e0e334f348e6c52fe5da588ec3448921af64f-s600-c85.jpg'
-                else:
-                    alt_img_url = soup.select('.bookedition .image img')[0].attrs.get('src').replace('s99', 's400')
+                alt_img_url = soup.select('.bookedition .image img')[0].attrs.get('src').replace('s99', 's400')
                 logger.info('LOG (%s): Getting alternate image from %s' % (book['title'], alt_img_url))
                 alt_img_resp = requests.get(alt_img_url)
                 with open(imagepath, 'wb') as writefile:
