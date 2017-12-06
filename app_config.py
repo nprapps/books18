@@ -125,6 +125,8 @@ except ImportError:
 ALWAYS_USE_NPR_COVER = [
     # White Fur
     "0451497929",
+    # The Family Imprint
+    "3775742484",
 ]
 
 
