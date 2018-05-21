@@ -2,7 +2,10 @@
 <html lang="en">
 
 <head>
-<title>{{ COPY.content.title }}</title>
+    <!-- GDPR compliance -->
+    <script type="text/javascript" src="//{{ S3_BUCKET }}/gdpr/gdprCompliance.js"></script>
+
+    <title>{{ COPY.content.title }}</title>
 
     {% include '_meta.html' %}
 
