@@ -2,7 +2,7 @@
 Helper functions for handling external links.
 
 External links are links to member station coverage of books.  They are
-submitted via a Google Form, such as this one, from the 2017 edition of
+submitted via a Google Form, such as this one, from the 2018 edition of
 the Concierge:
 https://docs.google.com/forms/d/11VfB7WeBIg1YQKNzfVzbU5rae53PJ02d4Xm4e9yIajA/edit
 

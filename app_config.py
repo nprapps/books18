@@ -20,7 +20,7 @@ NAMES
 """
 # Project name to be used in urls
 # Use dashes, not underscores!
-PROJECT_SLUG = 'best-books-2017'
+PROJECT_SLUG = 'best-books-2018'
 
 # Allow override from local settings to test random_prod locally
 try:
@@ -29,17 +29,17 @@ except ImportError:
     pass
 
 # Project name to be used in file paths
-PROJECT_FILENAME = 'books17'
+PROJECT_FILENAME = 'books18'
 
 # The name of the repository containing the source
-REPOSITORY_NAME = 'books17'
+REPOSITORY_NAME = 'books18'
 GITHUB_USERNAME = 'nprapps'
 REPOSITORY_URL = 'git@github.com:%s/%s.git' % (GITHUB_USERNAME, REPOSITORY_NAME)
 REPOSITORY_ALT_URL = None # 'git@bitbucket.org:nprapps/%s.git' % REPOSITORY_NAME'
 
 # Project name used for assets rig
 # Should stay the same, even if PROJECT_SLUG changes
-ASSETS_SLUG = 'books17'
+ASSETS_SLUG = 'books18'
 
 """
 DEPLOYMENT

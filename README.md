@@ -1,4 +1,4 @@
-Books Concierge (2017 version)
+Books Concierge (2018 version)
 ==============================
 
 * [What is this?](#what-is-this)
@@ -29,7 +29,7 @@ Books Concierge (2017 version)
 What is this?
 -------------
 
-[A snappy looking presentation of NPR contributors' favorite books of the year.](http://apps.npr.org/best-books-2017/)
+[A snappy looking presentation of NPR contributors' favorite books of the year.](http://apps.npr.org/best-books-2018/)
 
 This code is open source under the MIT license. See LICENSE for complete details.
 
@@ -398,8 +398,8 @@ curl https://npmjs.org/install.sh | sh
 Then bootstrap the project:
 
 ```
-cd books17
-mkvirtualenv --no-site-packages books17
+cd books18
+mkvirtualenv --no-site-packages books18
 pip install -r requirements.txt
 npm install
 ```
@@ -464,7 +464,7 @@ Run the project
 A flask app is used to run the project locally. It will automatically recompile templates and assets on demand.
 
 ```
-workon books17
+workon books18
 fab app
 ```
 
@@ -578,8 +578,8 @@ View a [sample data spreadsheet](https://docs.google.com/spreadsheets/d/10XgwGi6
 In order to get the covers for our books we are using an external service from BAKER & TAYLOR, in order to use it you will need your own credentials stored in these environment variables.
 
 ```
-books17_BAKER_TAYLOR_USERID="SampleUser"
-books17_BAKER_TAYLOR_PASSWORD="SamplePassword"
+books18_BAKER_TAYLOR_USERID="SampleUser"
+books18_BAKER_TAYLOR_PASSWORD="SamplePassword"
 ```
 
 Then run the loader:
@@ -640,7 +640,7 @@ This command takes around 15-20 minutes to bypass the rate limiting of the Goodr
 
 You'll want to make sure you update the book data before running this command.  Otherwise, the rows won't line up when you copy and paste into the Google Spreadsheet.  For the same reason, you will want to run the command when the book list is in a pretty stable state.
 
-To use the Goodreads API, you need a developer key. You should set this key as an environment variable like so: `books17_GOODREADS_API_KEY=YOUR_KEY_HERE` . If you need to replace this key, it's fairly simple to generate a new one from the [Goodreads API page](https://www.goodreads.com/api).
+To use the Goodreads API, you need a developer key. You should set this key as an environment variable like so: `books18_GOODREADS_API_KEY=YOUR_KEY_HERE` . If you need to replace this key, it's fairly simple to generate a new one from the [Goodreads API page](https://www.goodreads.com/api).
 
 Here's the task:
 
@@ -770,7 +770,7 @@ Compile static assets
 Compile LESS to CSS, compile javascript templates to Javascript and minify all assets:
 
 ```
-workon books17
+workon books18
 fab render
 ```
 
@@ -808,19 +808,19 @@ The Google Analytics events tracked in this application are:
 
 |Category|Action|Label|Value|Notes|
 |--------|------|-----|-----|-----|
-|best-books-2017|tweet|`location`|||
-|best-books-2017|facebook|`location`|||
-|best-books-2017|pinterest|`location`|||
-|best-books-2017|email|`location`|||
-|best-books-2017|open-share-discuss|||
-|best-books-2017|close-share-discuss|||
-|best-books-2017|summary-copied|||
-|best-books-2017|view-review|`book_slug`|||
-|best-books-2017|navigate|`next` or `previous`|||
-|best-books-2017|toggle-view|`list` or `grid`|||
-|best-books-2017|clear-tags||||
-|best-books-2017|selected-tags|`comma separated list of tags`|||
-|best-books-2017|library|`book_slug`||Book slug of library click|
-|best-books-2017|amazon|`book_slug`||Book slug of amazon click|
-|best-books-2017|ibooks|`book_slug`||Book slug of ibooks click|
-|best-books-2017|indiebound|`book_slug`||Book slug of indiebound click|
+|best-books-2018|tweet|`location`|||
+|best-books-2018|facebook|`location`|||
+|best-books-2018|pinterest|`location`|||
+|best-books-2018|email|`location`|||
+|best-books-2018|open-share-discuss|||
+|best-books-2018|close-share-discuss|||
+|best-books-2018|summary-copied|||
+|best-books-2018|view-review|`book_slug`|||
+|best-books-2018|navigate|`next` or `previous`|||
+|best-books-2018|toggle-view|`list` or `grid`|||
+|best-books-2018|clear-tags||||
+|best-books-2018|selected-tags|`comma separated list of tags`|||
+|best-books-2018|library|`book_slug`||Book slug of library click|
+|best-books-2018|amazon|`book_slug`||Book slug of amazon click|
+|best-books-2018|ibooks|`book_slug`||Book slug of ibooks click|
+|best-books-2018|indiebound|`book_slug`||Book slug of indiebound click|
