@@ -85,7 +85,7 @@
         <div class="modal-footer">
             <div class="social">
                 <p>Share Review:</p>
-                <a href="mailto:?body=<%= encodeURIComponent(APP_CONFIG.SHARE_URL + "#/book/" + book.slug + '\n\n"' + book.text.replace(/(<([^>]+)>)/ig,"") + '"\n\n--' + book.reviewer + ', ' + book.reviewer_id.replace(/(<([^>]+)>)/ig,"")) %>&amp;subject=<%= encodeURIComponent("NPR's best books of 2016 - " + book.title) %>" onclick="_gaq.push(['_trackEvent', '<%= APP_CONFIG.PROJECT_SLUG %>', 'email', '<%= book.slug %>']);">
+                <a href="mailto:?body=<%= encodeURIComponent(APP_CONFIG.SHARE_URL + "#/book/" + book.slug + '\n\n"' + book.text.replace(/(<([^>]+)>)/ig,"") + '"\n\n--' + book.reviewer + ', ' + book.reviewer_id.replace(/(<([^>]+)>)/ig,"")) %>&amp;subject=<%= encodeURIComponent("NPR's best books of 2018 - " + book.title) %>" onclick="_gaq.push(['_trackEvent', '<%= APP_CONFIG.PROJECT_SLUG %>', 'email', '<%= book.slug %>']);">
                     <div class="share-button">
                         <span class="icon icon-mail"></span>
                     </div>

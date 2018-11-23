@@ -342,7 +342,7 @@ class Book(object):
         """
         item_list = []
 
-        for item in value.split(','):
+        for item in value.split('|'):
             if item != '':
                 # Clean.
                 item = self._process_text(item).replace(' and ', ' & ')
