@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <!-- GDPR compliance -->
+    <script type="text/javascript" src="//{{ S3_BUCKET }}/gdpr/gdprCompliance.js"></script>
+
+    <title>{{ COPY.content.title }}</title>
+
+    {% include '_meta.html' %}
+
+    <!-- CHARTBEAT -->
+    <script type="text/javascript">var _sf_startpt=(new Date()).getTime()</script>
+
+    <!-- WEBFONTS -->
+    {{ JS.push('js/lib/webfont.js') }}
+    {{ JS.push('js/fonts.js') }}
+    {{ JS.render('js/webfonts.min.js') }}
+
+    <!-- CSS -->
+    <!-- FONTS -->
+    {{ CSS.push('www/css/icon/npr-app-template.css') }}
+    {{ CSS.render('css/rendered/fonts.min.css') }}
+    {{ CSS.push('less/app.less') }}
+    {% block extra_css %}{% endblock extra_css %}
+    {{ CSS.render('css/app.min.css') }}
+
+    {# Twitter #}
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:site" content="{{ COPY.share.twitter_handle }}">
+    <meta name="twitter:description" content="{{ COPY.share.twitter_text }}">
+    <meta name="twitter:image" content="{{ COPY.share.twitter_image_url }}" />
+
+    {# Facebook #}
+    <meta property="og:title" content="{{ COPY.share.facebook_title }}" />
+    <meta property="og:url" content="{{ COPY.share.share_url }}" />
+    <meta property="og:type" content="article" />
+    <meta property="og:description" content="{{ COPY.share.facebook_text }}" />
+    <meta property="og:image" content="{{ COPY.share.facebook_image_url }}" />
+    <meta property="og:site_name" content="NPR.org" />
+    <meta property="fb:app_id" content="{{ COPY.share.facebook_app_id }}" />
+
+    {# Google News #}
+    <meta name="thumbnail" content="{{ COPY.share.google_news_image_url }}" />
+
+    {% block extra_head %}
+    {% endblock extra_head %}
+</head>
+<body>
+    <a class="sr-only" href="#content">Skip To Content</a>
+
+    {% block outer_content %}
+
+<header id="top">
+    <div class="header-wrapper">
+        <a class="npr" href="https://npr.org/books/"><img src="../assets/books_logo.png" alt="NPR Books" /></a>
+        <h1>{{ COPY.content.header_title }}</h1>
+        <h2>{{ COPY.content.header_subhead }}</h2>
+        
+		
+                    <a href="{{ S3_BASE_URL }}"><button class="share btn btn-default about back"> Back To The Books Concierge
+                </button></a>
+    </div>
+
+                
+</header>
+
+    <section id="content">
+      <div class="btn" id="back-to-top">
+          <p id="back-to-top-text">Back to top&nbsp;&nbsp;<i class="icon-up-hand"></i></p>
+          <p id="back-to-top-no-text"><i class="icon-up-hand"></i></p>
+      </div>
+        <div class="container about">
+            <div class="row">
+                <div id="main-content" class="col-md-12">
+                    <body>
+
+                
+	<div class="question">What is this thing?</div>
+<div class="answer"><a href="https://apps.npr.org/best-books-2018/&amp;sa=D&amp;ust=1543080679012000">The Book Concierge</a>
+ is NPR's annual, interactive, year-end reading guide. Mix and match tags such as 
+<a href="https://apps.npr.org/best-books-2018/%23/tag/book-club-ideas&amp;sa=D&amp;ust=1543080679012000">Book Club Ideas</a>, <a href="https://apps.npr.org/best-books-2018/%23/tag/biography-and-memoir&amp;sa=D&amp;ust=1543080679013000">Biography &amp; Memoir,</a> or <a href="https://apps.npr.org/best-books-2018/%23/tag/ladies-first&amp;sa=D&amp;ust=1543080679013000">Ladies First</a> to filter results and find the book that's perfect for you or someone you love.</div>
+
+<div class="question">How are the books selected?</div>
+<div class="answer">Each fall, we reach out to our staffers and trusted critics and ask them to nominate their favorite books of the year. They respond with hundreds of titles. Then, the editors and producers at NPR Books sit down with a huge spreadsheet of responses; we select our favorites, resolve duplications, note omissions and consider the overall mix and balance of books recommended.</div>
+
+
+<div class="question">Why isn't this just a list?</div>
+<div class="answer">Back in 2013 the NPR Books staff was suffering from an acute case of list fatigue. So we teamed up with our friends at NPR Visuals, and started to think about a site that would be more Venn diagram-y than list-y &mdash; a site that could help you seek out the best biographies that were also love stories, or the best mysteries that were also set in the past. We wholeheartedly believe that human beings are capable of absorbing new information in formats that are 1) not sequentially ordered and 2) wait ... dammit! and 3) never mind.</div>
+
+
+<div class="question">But no, really, I just want to see a list of books</div>
+<div class="answer">We got you. To view these books as a list of titles rather than an array of covers, you are welcome to select the "List" option in the upper right-hand corner of the site. </div>
+
+
+<div class="question">So what's the deal with these tags?</div>
+<div class="answer">At NPR Books we&#39;re all about discovery: Helping you find your next great read &mdash; the mystery you can&#39;t put down, the memoir you recommend to all your friends. In 2013 we hashed out a basic taxonomy that was both functional (i.e., 
+<a href="https://apps.npr.org/best-books-2018/%23/tag/biography-and-memoir&amp;sa=D&amp;ust=1543080679015000">Biography &amp; Memoir</a> or <a href="https://apps.npr.org/best-books-2018/%23/tag/kids-books&amp;sa=D&amp;ust=1543080679015000">Kids' Books</a> ) and fun (i.e.,  <a href="https://apps.npr.org/best-books-2018/%23/tag/its-all-geek-to-me&amp;sa=D&amp;ust=1543080679015000">It's All Geek To Me</a>
+ and  <a href="https://apps.npr.org/best-books-2018/%23/tag/lets-talk-about-sex&amp;sa=D&amp;ust=1543080679016000">Let's Talk About Sex</a> <span>). Over the years we've refined our filters and added new tags &mdash; </span> <a href="http://apps.npr.org/best-books-2018/tag_share/the-states-were-in.html&amp;sa=D&amp;ust=1543080679016000">The States We're In</a> and <a href="http://apps.npr.org/best-books-2018/tag_share/no-biz-like-show-biz.html&amp;sa=D&amp;ust=1543080679016000"> No Biz Like Show Biz</a> are the most recent newcomers.</div>
+
+
+<div class="question">The names are cute, but what do they mean?</div>
+<div class="answer"><a href="https://apps.npr.org/best-books-2018/%23/tag/the-states-were-in&amp;sa=D&amp;ust=1543080679017000">The States We're In</a> is for stories of the American experience both true and fictional.
+<a href="https://apps.npr.org/best-books-2018/%23/tag/its-all-geek-to-me&amp;sa=D&amp;ust=1543080679017000">It's All Geek To Me</a> is for deep dives on particular topics -- trees, personality tests, tiny houses, you name it. In <a href="https://apps.npr.org/best-books-2018/%23/tag/the-dark-side&amp;sa=D&amp;ust=1543080679017000">The Dark Side</a> you'll find dystopias, serial killers, true crime and people behaving badly in general. <a href="https://apps.npr.org/best-books-2018/%23/tag/eye-opening-reads&amp;sa=D&amp;ust=1543080679017000">Eye-Opening Reads</a>
+ will give you a new perspective on the topic at hand, whether it's the state of philanthropy or a new pair of shoes. </div>
+
+
+<div class="question">How do the books get tagged?</div>
+<div class="answer">Our critics and staffers make suggestions, but to ensure we are applying tags consistently, the producers and editors at NPR Books consider and discuss every tag on every book.</div>
+
+
+<div class="question">That must take a very long time</div>
+<div class="answer">YUP.</div>
+
+
+<div class="question">Can I look under the hood?</div>
+<div class="answer">If you want to know more about how the Concierge was designed and coded, you can read about the process 
+<a href="http://blog.apps.npr.org/2013/12/10/the-book-concierge.html&amp;sa=D&amp;ust=1543080679019000">here</a>. And if you're curious to see the code and adapt it for your own project, you can check it out
+<a href="https://github.com/nprapps/books13&amp;sa=D&amp;ust=1543080679019000">here.</a></div>
+
+
+<div class="question">If I click on the links and purchase one of the books, does that purchase help NPR?</div>
+<div class="answer">Yes. And you can read more about how that works <a href="https://help.npr.org/customer/portal/articles/2168887-how-can-my-online-purchases-support-npr-programming&amp;sa=D&amp;ust=1543080679020000">here.</a></div>
+
+
+<div class="question">This only has books from 2018 - how can I browse books from previous years?</div>
+<div class="answer">You can find our picks from
+<a href="https://apps.npr.org/best-books-2017/&amp;sa=D&amp;ust=1543080679021000">2017</a>
+,
+<a href="https://apps.npr.org/best-books-2016/&amp;sa=D&amp;ust=1543080679021000">2016</a>
+,
+<a href="https://apps.npr.org/best-books-2015/&amp;sa=D&amp;ust=1543080679021000">2015</a>
+,
+<a href="https://apps.npr.org/best-books-2014/&amp;sa=D&amp;ust=1543080679021000">2014</a>
+and
+<a href="https://apps.npr.org/best-books-2013/&amp;sa=D&amp;ust=1543080679022000">2013</a>
+ right here.</div>
+
+
+<div class="answer">Thanks for visiting the Book Concierge &mdash; we hope you find something wonderful to read today!</div>
+
+<div class="answer">
+<a href="https://www.npr.org/people/348743704/beth-novey&amp;sa=D&amp;ust=1543080679022000">Beth Novey</a>
+,
+<a href="https://www.npr.org/people/2100882/petra-mayer&amp;sa=D&amp;ust=1543080679022000">Petra Mayer</a>
+,
+<a href="https://www.npr.org/people/349241810/rose-friedman&amp;sa=D&amp;ust=1543080679023000">Rose Friedman</a>
+and
+<a href="https://www.npr.org/people/348764103/ellen-silva&amp;sa=D&amp;ust=1543080679023000">Ellen Silva</a>
+NPR Books</div>
+
+
+</body>
+
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer id="footer">
+        <div class="primary">
+            <ul>
+                <li><a href="https://www.npr.org" data-action="Click Logo"><img src="../assets/logo.png" alt="NPR Logo"></a></li>
+                <li class="news"><a href="https://www.npr.org/sections/news/">News</a></li>
+                <li class="artslife"><a href="https://www.npr.org/sections/arts/">Arts &amp; Life</a></li>
+                <li class="music"><a href="https://www.npr.org/music/">Music</a></li>
+                <li class="programs"><a href="https://www.npr.org/programs/">Programs</a></li>
+                <li class="listen"><a href="https://www.npr.org/listen/">Listen</a></li>
+                <li class="about"><a href="https://www.npr.org/about/">About</a></li>
+            </ul>
+        </div>
+        <div class="secondary">
+            <p>{{ COPY.content.copyright }}</p>
+            <ul>
+                <li id="footerContact"><a href="https://help.npr.org/npr/includes/customer/npr/custforms/contactus.aspx">Contact</a></li>
+                <li><a href="https://www.npr.org/about/termsofuse.html">Terms of Use</a></li>
+                <li><a href="https://www.npr.org/about/privacypolicy.html">Privacy</a></li>
+                <li><a href="https://thin.npr.org/">Text-Only</a></li>
+            </ul>
+        </div>
+    </footer>
+    {% endblock outer_content %}
+
+    {% include '_share_modal.html' %}
+
+    <!-- JS -->
+    <script src="../js/lib/clipboard.min.js"></script>
+    {{ JS.push('js/app_config.js') }}
+    {{ JS.push('js/lib/modernizr.js') }}
+    {{ JS.push('js/copy.js') }}
+    {{ JS.push('js/console.js') }}
+    {{ JS.push('js/lib/jquery-2.1.1.js') }}
+    {{ JS.push('node_modules/isotope-layout/dist/isotope.pkgd.js') }}
+    {{ JS.push('node_modules/imagesloaded/imagesloaded.pkgd.js') }}
+    {{ JS.push('js/lib/html5.js') }}
+    {{ JS.push('js/lib/jquery.scrollTo-2.1.2.js') }}
+    {{ JS.push('node_modules/underscore/underscore.js') }}
+    {{ JS.push('node_modules/bootstrap/dist/js/bootstrap.js') }}
+    {{ JS.push('node_modules/signals/dist/signals.js') }}
+    {{ JS.push('node_modules/hasher/dist/js/hasher.js') }}
+    {{ JS.push('js/lib/jquery.unveil.js') }}
+    {% block extra_foot_js %}{% endblock extra_foot_js %}
+    {{ JS.push('js/analytics.js')}}
+    {{ JS.push('js/templates.js') }}
+    {{ JS.push('js/app.js') }}
+    {{ JS.render('js/app-footer.min.js') }}
+
+    {% block extra_foot %}
+    {% endblock extra_foot %}
+
+
+</body>
+</html>
+
+
+

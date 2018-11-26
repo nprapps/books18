@@ -6,10 +6,12 @@ import json
 import time
 import urllib
 import subprocess
+import markdown as md
 
 from flask import Markup, g, render_template, request
 from slimit import minify
 from smartypants import smartypants
+from markdown_newtab import NewTabExtension
 
 import app_config
 import copytext
@@ -233,3 +235,10 @@ def smarty_filter(s):
         print 'This string failed to encode: %s' % s
         return Markup(s)
 
+
+def markdown_filter(value):
+    """
+    Run text through markdown process
+    """
+    markdownify = md.Markdown(extensions=[NewTabExtension()])
+    return Markup(markdownify.convert(value))

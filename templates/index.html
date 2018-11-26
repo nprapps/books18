@@ -8,9 +8,14 @@
         <h2>{{ COPY.content.header_subhead }}</h2>
         <p class="byline">{{ COPY.attribution.byline }}</p>
         <button class="share btn btn-default" data-toggle="modal" data-backdrop="static" data-target="#share-modal"><i class="icon-export"></i> SHARE THIS APP</button>
+<br>
+                    <a href="{{ S3_BASE_URL }}/about/">
+                        <button class="share btn btn-default about">
+                     {{ COPY.content.about_title }}
+                </button></a>
     </div>
 
-
+                
 </header>
 {% endblock %}
 
