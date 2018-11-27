@@ -48,16 +48,21 @@ nav, .col-md-12, header, footer {
 
 .question{
     font-weight: bold;
+    text-transform: uppercase;
+    font-size: 160%;
     color: lighten(@novey-blue,70);
-    margin-top: 10px;
-    margin-bottom: 5px;
+    margin-top: 15px;
+    margin-bottom: 15px;
 }
 .answer{
     margin-bottom: 10px;
+    line-height: 175%;
     a, a:link {
     color: lighten(@novey-blue,20);
     }
 }
+#content
+{background-color: darken(@novey-blue,10);}
 
 
 .container{
@@ -69,6 +74,8 @@ nav, .col-md-12, header, footer {
     padding-bottom: 50px;
     background-color: darken(@novey-blue,10);
     color : white;
+    max-width: 800px;
+    margin: auto;
 }
 
 // General styles
@@ -194,13 +201,13 @@ header {
             background-color: @dark-gray;
         }
         &.about {
-            background-color: mix(@novey-blue, #fff, 60);
+            background-color: mix(@novey-blue, #fff, 20);
             a, a:link{color : darken(@novey-blue, 10%);}
             a:hover {color: @novey-blue;}
             text-transform: uppercase;
             font-size: 70%;
             margin-top: 200px;
-            &.back {margin-top: 120px;}
+            &.back {margin-top: 160px;}
             @media screen and (max-width: @screen-sm) {
             margin-top:20px;
             &.back {margin-top: 20px;}
