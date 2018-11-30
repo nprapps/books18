@@ -100,18 +100,13 @@ COPY EDITING
 """
 COPY_GOOGLE_DOC_KEY = '1X_kgRUhDXmxH2nXt6QC2BeBwD4yr70BzrZ4g3hgP0KE'
 
-#'1zQMjIfIwqD-INhQDj_Dr06YlTRw5A6KJ5Z9nxBA6qtQ'
 COPY_PATH = 'data/copy.xlsx'
 
 # Key for Google Spreadsheet that contains book entries
 # This is the key for a production version.  Want to use a testing version?
 # Consider defining it in a `local_settings` module.
 DATA_GOOGLE_DOC_KEY = '1ZGOunTkiP1F8qfdsPPrf8jzY2jvJ9gUhrGXgNeQrmCM'
-#https://docs.google.com/spreadsheets/d/e/2PACX-1vS31GPUAeG5gy8JPlHVOPEvqjnaPR-bMIPc_1FYektgrd2K7nIQUkCpmM23yJIo63sAvzTK3rpYtjzP/pub?output=csv
 # NOTE :: make sure that the document has been published to the web or data.update will not work
-
-#'1l2L3WW_q7zE1t0hpgKVao5Psw7BE2bK_UL8fio-OG08'
-
 
 # Override
 try:
